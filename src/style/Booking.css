@@ -1,0 +1,70 @@
+.booking {
+    width: 100%;
+    height: 100%;
+}
+
+.commentInput {
+    min-width: 50px;
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid rgb(200, 200, 200);
+    background-color:white;
+    font-weight: bolder;
+    transition-duration: 0.3s;
+  }
+
+.commentInput:focus {
+    border: none;
+    border-bottom: 2px solid rgb(40, 40, 40);
+  }
+
+.title {
+    width: 100%;
+    text-align: center;
+    padding: 40px;
+    font-size: 24px;
+}
+
+.typeSelection, .trainersBlock, .horseBlock, .commentBlock {
+    width: 100%;
+    padding: 20px;
+}
+
+.typeSelect {
+    margin-top: 10px;
+    border-radius: 20px;
+    padding: 5px;
+}
+
+.nextTypeBtn {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.trainerSelectionBlock {
+    width: 100%;
+    /* padding-top: 10px; */
+}
+
+.timeSelection {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+    padding-bottom: 30px;
+}
+
+.changeTimeBtn {
+    border-width: 0px;
+    font-style: oblique;
+    font-weight: lighter;
+    color: rgb(50, 50, 50);
+    text-decoration: underline;
+}
+
+.backBtn {
+    margin-bottom: 20px;
+}
+
+.SignupBtn {
+    margin-bottom: 40px;
+}

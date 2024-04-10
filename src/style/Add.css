@@ -1,0 +1,107 @@
+.AddWorkerScreen, .AddHorseScreen {
+    width: 100vw;
+    height: 100vh;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.AddWorkerInputsBlock, .AddHorseInputsBlock {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 25px;
+}
+
+.text {
+    width: 320px;
+    min-width: 160px;
+}
+
+.typeBlock {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.textInfo {
+    font-weight: bolder;
+    font-size: 18px;
+}
+
+.roleBlock, .usernameBlock, .phoneBlock, .passwordBlock, .descriptionBlock,
+.photoBlock, .nameBlock {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.addWorkerTitleBlock, .addHorseTitleBlock {
+    margin-top: 40px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.selection {
+    width: 200px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 16px;
+    border-color: black;
+    border-radius: 14px;
+    height: 28px;
+    padding-left: 8px;
+}
+
+.addWorkerError, .addHorseError {
+    color: red;
+    font-weight: lighter;
+}
+
+.buttonBlock {
+    width: 100%;
+    text-align: center;
+}
+
+.addButton {
+    margin-top: 40px;
+}
+
+.invisible {
+    display: none;
+  }
+
+  .addWorkerUserInput, .addWorkerPasswordInput, .addWorkerDescInput, 
+  .addWorkerPhotoInput, .addHorseNameInput, .addHorseDescInput, .addHorsePhotoInput {
+    min-width: 50px;
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid rgb(200, 200, 200);
+    background-color:white;
+    font-weight: bolder;
+    transition-duration: 0.3s;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .addWorkerUserInput:focus, .addWorkerPasswordInput:focus, .addWorkerDescInput:focus,
+  .addWorkerPhotoInput:focus, .addHorseNameInput:focus, .addHorseDescInput:focus, 
+  .addHorsePhotoInput:focus {
+    border: none;
+    border-bottom: 2px solid rgb(40, 40, 40);
+  }
+
+  .invalid {
+    border-color: red;
+  }
+
+  .typeBlockMultiselect {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 30px;
+  }
