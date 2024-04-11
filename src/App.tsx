@@ -5,7 +5,6 @@ import './style/App.css'
 
 import SignUp from './SignUp'
 import SignIn from './SignIn'
-import Skills from './Skills'
 import OnlineBooking from './OnlineBooking'
 import AddTrainer from './AddTrainer'
 import AddHorse from './AddHorse'
@@ -18,7 +17,6 @@ const App = () => {
     <Routes>
         <Route path='/' element={<SignUp/>}/>
         <Route path='/signin' element={<SignIn/>}/>
-        <Route path='/skills' element={<Skills/>}/>
         <Route path='/book' element={<OnlineBooking/>}/>
         <Route path='/addtrainer' element={<AddTrainer/>}/>
         <Route path='/addhorse' element={<AddHorse/>}/>

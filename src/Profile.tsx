@@ -9,8 +9,25 @@ import './style/Profile.css'
 function Profile() {
     const { userId } = useParams();
 
+    const [fetched, fetchedSet] = useState(0)
+    const [name, nameSet] = useState("")
+    const [description, descriptionSet] = useState("")
+    const [type, typeSet] = useState("")
+    const [photo, photoSet] = useState("")
+
     return(
-        <div className="profileScreen"></div>
+        <div className="profileScreen">
+            <div className="mainInfoBlock">
+                <div className="imageBlock">
+                    {photo != "" &&
+                    <Image src={photo} roundedCircle />}
+                    {photo == "" && 
+                    <Image src="https://static.thenounproject.com/png/1095867-200.png" roundedCircle fluid/>}
+                </div>
+                <div className="nameBlock">Name{name}</div>
+            </div>
+            <div className="descriptionBlock">DDd{description}</div>
+        </div>
     )
 }
 
