@@ -13,17 +13,20 @@
     align-items: center;
 }
 
-.trainingsBlock, .makeUnavaileableBtn {
+.trainingsBlock, .makeUnavaileableBtn, .makeAvaileableBtn, .makeDayOffBtn {
     width: 100%;
 }
 
 .unavailableDisplay {
   flex: 1 1 auto;
-  height: 298px;
+  width: 100%;
   background-color: rgb(232, 62, 82);
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   color: white;
-  padding-top: 145px;
+  margin-bottom: 10px;
   border-radius: 10px;
 }
 
@@ -32,6 +35,12 @@
   z-index: 10;
   padding-left: 20px;
   padding-top: 40px;
+}
+
+.trainingsTextBlock {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-weight: lighter;
 }
 
 
@@ -119,7 +128,7 @@
   }
   
   .react-calendar__month-view__days__day--weekend {
-    color: #d10000;
+    color: #600000;
   }
   
   .react-calendar__month-view__days__day--neighboringMonth,
@@ -189,6 +198,7 @@
   .react-calendar__tile--active:enabled:focus {
     background: black;
     color: white;
+    /* border: 1px solid black; */
   }
   
   .react-calendar--selectRange .react-calendar__tile--hover {

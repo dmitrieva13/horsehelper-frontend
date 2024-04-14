@@ -5,6 +5,7 @@ import { Button, Card, Image, Modal } from 'react-bootstrap';
 
 import './style/App.css'
 import './style/Horses.css'
+import Loading from './Loading';
 
 function Horses() {
     const [fetched, fetchedSet] = useState(0)
@@ -33,22 +34,29 @@ function Horses() {
 
     useEffect(() => {
         if (!fetched) {
-            horsesSet([{id:"oblako",
-                name: "Облако",
-                photo: "https://flomaster.top/o/uploads/posts/2023-11/1699608782_flomaster-top-p-seraya-v-yablokakh-loshad-risunok-pinteres-5.jpg",
-                description: "Молодой серый конь",
-                types: ["Выездка", "Общая"]
-            },
-            {id:"oblako2",
-            name: "Облако2",
-            photo: "https://flomaster.top/o/uploads/posts/2023-11/1699608782_flomaster-top-p-seraya-v-yablokakh-loshad-risunok-pinteres-5.jpg",
-            description: "Молодой сер",
-            types: ["Общая"]
-        }])
+            fetch("https://horsehelper-backend.onrender.com/all_horses", {
+              method: "POST",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+          }
+          ).then(res=>res.json())
+          .then(response=>{
+            console.log(response)
+            horsesSet(response.horses)
+            if (response.accessToken) {
+                localStorage.setItem('token', response.accessToken)
+            }
+          })
+          .catch(er=>{
+            console.log(er.message)
+        })
             fetchedSet(1)
         }
     })
 
+    if (fetched) {
     return(
         <div className="HorsesMainScreen">
             <div className="title">Наши лошади</div>
@@ -69,7 +77,7 @@ function Horses() {
                                 showHorseDetailed(horse.name, horse.photo, 
                                     horse.description, spec, horse.id)
                             }}>
-                                <Card.Img variant="top" src={horse.photo} />
+                                <Card.Img variant="top" src={horse.photo} className='cardImage'/>
                                 <Card.Body>
                                     <Card.Title>{horse.name}</Card.Title>
                                     <Card.Subtitle className="mb-2 text-muted">Специализация: {spec}</Card.Subtitle>
@@ -111,6 +119,12 @@ function Horses() {
             </div>
         </div>
     )
+    }
+    else {
+        return(
+            <Loading />
+        )
+    }
 }
 
 export default Horses

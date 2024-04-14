@@ -11,6 +11,7 @@ import AddHorse from './AddHorse'
 import Horses from './Horses'
 import HorseCalendar from './HorseCalendar'
 import Profile from './Profile'
+import TrainerCalendar from './TrainerCalendar'
 
 const App = () => {
   return(
@@ -23,6 +24,7 @@ const App = () => {
         <Route path='/horses' element={<Horses/>}/>
         <Route path='/horses/:horseId/calendar' element={<HorseCalendar/>}/>
         <Route path='/user/:userId' element={<Profile/ >}/>
+        <Route path='/tcalendar/:userId' element={<TrainerCalendar/ >}/>
     </Routes>
   )
 }

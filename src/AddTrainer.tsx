@@ -67,12 +67,15 @@ function AddTrainer() {
               body: JSON.stringify({
                     phone: "+7"+phone,
                     password: password,
-                    name: name
+                    name: name,
+                    trainerPhoto: photo,
+                    trainerDescription: description,
+                    trainerType: type,
+                    accessToken: localStorage.getItem('token')
                 }),
               headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': localStorage.getItem('token')
+                'Content-Type': 'application/json'
               },
           }
           ).then(res=>res.json())
@@ -103,8 +106,8 @@ function AddTrainer() {
         phoneInvalidSet(true)
         checked = false
     }
-    errortotalSet('Заполните все обязательные поля!')
     if (!checked) {
+        errortotalSet('Заполните все обязательные поля!')
         return
     }
     sendData()
@@ -163,7 +166,7 @@ function AddTrainer() {
                                 onChange={e => passwordSet(e.target.value.replace(/[^A-Za-z0-9?!-.,_]/ig, ''))} 
                                 required minLength={4} placeholder='от 4 до 30 символов'/>
             </div>
-            <div className="descriptionBlock">
+            <div className="descriptionInputBlock">
                 <div className="text">Описание:</div>
                 <input className="addWorkerDescInput" type="text" maxLength={1000} value={description}
                                 onChange={e => descriptionSet(e.target.value)} />

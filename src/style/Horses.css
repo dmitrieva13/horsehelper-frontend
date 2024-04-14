@@ -22,3 +22,10 @@
     padding-top: 15px;
     padding-bottom: 10px;
 }
+
+.cardImage {
+    object-fit: cover;
+    border-radius: 55;
+    width: 100%;
+    height: 75%;
+}

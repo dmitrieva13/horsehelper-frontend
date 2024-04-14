@@ -5,7 +5,7 @@ import Calendar from 'react-calendar';
 import { Button, CloseButton } from 'react-bootstrap';
 
 import './style/App.css'
-import './style/HorseCalendar.css'
+import './style/Calendar.css'
 // import 'react-calendar/dist/Calendar.css';
 import TrainingInfo from './TrainingInfo';
 
@@ -85,12 +85,39 @@ function HorseCalendar() {
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
             }
+            isAvailableSet(false)
+            getUnavailableDays()
           })
           .catch(er=>{
             console.log(er.message)
         })
+    }
 
-        isAvailableSet(false)
+    let makeAvaileableBtnClicked = () => {
+        fetch("https://horsehelper-backend.onrender.com/make_horse_available", {
+              method: "POST",
+              body: JSON.stringify({
+                    id: horseId,
+                    date: day,
+                    accessToken: localStorage.getItem('token')
+                }),
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+          }
+          ).then(res=>res.json())
+          .then(response=>{
+            console.log(response)
+            if (response.accessToken) {
+                localStorage.setItem('token', response.accessToken)
+            }
+            isAvailableSet(true)
+            getUnavailableDays()
+          })
+          .catch(er=>{
+            console.log(er.message)
+        })
     }
 
     useEffect(() => {
@@ -110,6 +137,7 @@ function HorseCalendar() {
             </div>
             <div className="title">Расписание лошади</div>
             
+            {fetched &&
             <div className="calendarBlock">
                 <Calendar className="calendar" onChange={e => dayChanged(e)} value={day} minDate={today}/>
                 {day != null && isAvailable &&
@@ -124,11 +152,18 @@ trainer={"string"} trainerPhone={"string"} horse={"string"} type={"any"} comment
                     </Button>
                 </div>}
                 {!isAvailable && 
-                <div className="unavailableDisplay">
+                <div className="raspDisplay">
+                    <div className="unavailableDisplay">
                     В этот день лошадь недоступна для занятий
+                </div>
+                    <Button variant='secondary' className='makeAvaileableBtn'
+                    onClick={makeAvaileableBtnClicked}>
+                        Сделать доступной в этот день
+                    </Button>
                 </div>
                 }
             </div>
+}
         </div>
     )
 }

@@ -31,7 +31,7 @@
 }
 
 .roleBlock, .usernameBlock, .phoneBlock, .passwordBlock, .descriptionBlock,
-.photoBlock, .nameBlock {
+.photoBlock, .nameBlock, .descriptionInputBlock {
     display: flex;
     flex-direction: row;
     column-gap: 10px;
