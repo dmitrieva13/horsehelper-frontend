@@ -12,12 +12,14 @@ import Horses from './Horses'
 import HorseCalendar from './HorseCalendar'
 import Profile from './Profile'
 import TrainerCalendar from './TrainerCalendar'
+import HomePage from './HomePage'
 
 const App = () => {
   return(
     <Routes>
         <Route path='/' element={<SignUp/>}/>
         <Route path='/signin' element={<SignIn/>}/>
+        <Route path='/home' element={<HomePage/>}/>
         <Route path='/book' element={<OnlineBooking/>}/>
         <Route path='/addtrainer' element={<AddTrainer/>}/>
         <Route path='/addhorse' element={<AddHorse/>}/>

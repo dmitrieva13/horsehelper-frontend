@@ -1,7 +1,5 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Button, Modal, ListGroup } from 'react-bootstrap';
 import Moment from 'moment';
 
 import './style/App.css'
@@ -18,10 +16,12 @@ function Announcement(props: {date: any, title: string, body: string}) {
 
     return(
         <div className="Announcement">
-            <div className="smallBody">
-                <div className="dateBlock">{dateBeautify()}</div>
-                <div className="titleBlock">{props.title}</div>
+            <div className={showFull ? "smallBody fullShowed" : "smallBody"}
+            onClick={() => showFullSet(!showFull)}>
+                <div className="AnnouncementDateBlock">{dateBeautify()}</div>
+                <div className="AnnouncementTitleBlock">{props.title}</div>
             </div>
+            <div className={!showFull ? "fullBody fullHidden" : "fullBody"}>{props.body}</div>
         </div>
     )
 }
