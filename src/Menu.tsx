@@ -2,12 +2,12 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, Offcanvas } from 'react-bootstrap';
-import { List } from 'react-bootstrap-icons';
+import { List, BoxArrowRight } from 'react-bootstrap-icons';
 
 import './style/App.css'
 import './style/Menu.css'
 
-function Menu() {
+function Menu(props: {isProfile: boolean}) {
     const [showMenu, showMenuSet] = useState(false)
     const [name, nameSet] = useState("")
     const [id, idSet] = useState("")
@@ -40,7 +40,12 @@ function Menu() {
 
     let profileClicked = () => {
         handleClose()
-        navigate('../user' + id)
+        navigate('../user/' + id)
+    }
+
+    let logoutClicked = () => {
+        localStorage.clear()
+        navigate('../signin')
     }
 
     useEffect(() => {
@@ -60,7 +65,15 @@ function Menu() {
         <div className="menu">
             <div className="topHolder">
                 <List className='menuIcon' onClick={handleShow} size={28}/>
+                { !props.isProfile &&
                 <div className="profileBtn" onClick={profileClicked}>{localStorage.getItem('name')}</div>
+                }
+                { props.isProfile &&
+                <div className="logoutBtn" onClick={logoutClicked}>
+                    Выйти
+                    <BoxArrowRight size={20} color='red' />
+                </div>
+                }
             </div>
             
             <Offcanvas show={showMenu} onHide={handleClose}>

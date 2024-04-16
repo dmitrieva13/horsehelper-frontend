@@ -42,6 +42,10 @@ function HorseCalendar() {
           ).then(res=>res.json())
           .then(response=>{
             console.log(response)
+            if (response.error) {
+                localStorage.clear()
+                navigate('./signin')
+            }
             unavailableArrSet(response.unavailableDays)
             console.log(response.unavailableDays)
             if (response.accessToken) {

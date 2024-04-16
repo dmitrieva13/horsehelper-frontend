@@ -5,11 +5,15 @@ import { Col, Button, Row, Container, Card, Form, InputGroup } from 'react-boots
 import { jwtDecode } from "jwt-decode";
 
 import './style/App.css'
+import Message from './Message';
 
 function SignIn() {
     const [phone, phoneSet] = useState("")
     const [password, passwordSet] = useState("")
     const [error, errorSet] = useState("")
+    const [isPhoneValid, isPhoneValidSet] = useState(true)
+    const [isPassValid, isPassValidSet] = useState(true)
+    const [showMessage, showMessageSet] = useState(false)
 
     const navigate = useNavigate()
 
@@ -34,6 +38,7 @@ function SignIn() {
           ).then(res=>res.json())
           .then(response=>{
             console.log(response)
+            
             localStorage.setItem('token', response.accessToken)
             const decoded = jwtDecode<JwtPayload>(response.accessToken);
             localStorage.setItem('id', decoded.id)
@@ -43,6 +48,9 @@ function SignIn() {
           })
           .catch(er=>{
             console.log(er.message)
+            
+            isPassValidSet(false)
+            isPhoneValidSet(false)
         })
     }
 
@@ -73,6 +81,8 @@ function SignIn() {
                                     onChange={a => phoneSet(a.target.value)} required
                                     aria-describedby="basic-addon1"
                                     pattern='[0-9]{10}'
+                                    isInvalid={!isPhoneValid}
+                                    onClick={() => isPhoneValidSet(true)}
                                 />
                             </InputGroup>
                             </Form.Group>
@@ -83,7 +93,10 @@ function SignIn() {
                             >
                                 <Form.Label>Пароль</Form.Label>
                                 <Form.Control type="password" placeholder="Введите пароль" required
-                                onChange={a => passwordSet(a.target.value)} />
+                                onChange={a => passwordSet(a.target.value)} 
+                                isInvalid={!isPassValid}
+                                onClick={() => isPassValidSet(true)}
+                                />
                             </Form.Group>
                             <Form.Group
                                 className="mb-3"

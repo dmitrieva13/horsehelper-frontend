@@ -81,7 +81,13 @@ function AddTrainer() {
           ).then(res=>res.json())
           .then(response=>{
             console.log(response)
-            localStorage.setItem('token', response.accessToken)
+            if (response.error) {
+              localStorage.clear()
+              navigate('./signin')
+            }
+            if (response.accessToken) {
+              localStorage.setItem('token', response.accessToken)
+            }
           })
           .catch(er=>{
             console.log(er.message)

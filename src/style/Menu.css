@@ -27,6 +27,15 @@
     transition-duration: 0.5s;
 }
 
+.logoutBtn {
+    color: red;
+    display: flex;
+    flex-direction: row;
+    column-gap: 5px;
+    align-items: center;
+    cursor: pointer;
+}
+
 .topHolder {
     width: 100%;
     display: flex;

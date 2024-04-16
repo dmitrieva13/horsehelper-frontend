@@ -99,7 +99,7 @@ function HomePage() {
     if (fetched) {
     return(
         <div className="homePage">
-            <Menu />
+            <Menu isProfile={false} />
             <div className="titleBlock">Наши новости</div>
             <div className="announcementsBlock">
                 {announcements.length > 0 &&
@@ -112,7 +112,7 @@ function HomePage() {
             </div>
 
             <div className="newBtnBlock">
-                <Button className="newAnnouncementBtn" variant='dark'
+                <Button className="newAnnouncementBtn" variant='dark' size='lg'
                 onClick={handleShow}>Добавить объявление</Button>
             </div>
 

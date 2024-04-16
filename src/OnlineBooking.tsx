@@ -164,6 +164,7 @@ function OnlineBooking() {
         timeSet(start.startTime)
         trainerSet("")
         horseSet(null)
+        makeInvisisble("calendarBlockBooking")
     }
 
     let signupBtnClicked = () => {
@@ -188,7 +189,7 @@ function OnlineBooking() {
 
     return (
         <div className='booking'>
-            <Menu />
+            <Menu isProfile={false} />
             <div className="title">Запись на тренировку</div>
 
             <div className="typeSelection">
@@ -223,11 +224,11 @@ function OnlineBooking() {
                             " "+time.toLocaleDateString() + " " + time.toLocaleTimeString()}
                         </div>
                         <button className='changeTimeBtn'
-                        onClick={e => makeVisisble("calendarBlock")}>
+                        onClick={e => makeVisisble("calendarBlockBooking")}>
                             {time == null ? "Выбрать" : "Изменить"}
                         </button>
                     </div>
-                    <div className="calendarBlock hidden">
+                    <div className="calendarBlockBooking hidden">
                         <ScheduleMeeting
                             borderRadius={20}
                             primaryColor="#000000"
@@ -236,7 +237,7 @@ function OnlineBooking() {
                             availableTimeslots={getAvailableTimeslot(type)}
                             onStartTimeSelect={e => {
                                 timeSelected(e)
-                                makeInvisisble("calendarBlock")
+                                makeInvisisble("calendarBlockBooking")
                             }}
                             locale={ru}
                             format_startTimeFormatString="HH:mm"

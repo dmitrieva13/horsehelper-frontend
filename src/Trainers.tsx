@@ -4,19 +4,19 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Button, Card, Image, Modal } from 'react-bootstrap';
 
 import './style/App.css'
-import './style/Horses.css'
+import './style/Trainers.css'
 import Loading from './Loading';
 import Menu from './Menu';
 
-function Horses() {
+function Trainers() {
     const [fetched, fetchedSet] = useState(0)
-    const [horses, horsesSet] = useState<any[]>([])
+    const [trainers, trainersSet] = useState<any[]>([])
     const [showInfo, showInfoSet] = useState(false)
     const [name, nameSet] = useState("")
     const [photo, photoSet] = useState("")
     const [description, descriptionSet] = useState("")
     const [specialization, specializationSet] = useState("")
-    const [horseId, horseIdSet] = useState("")
+    const [trainerId, trainerIdSet] = useState("")
 
     const navigate = useNavigate()
 
@@ -25,74 +25,65 @@ function Horses() {
         photoSet(photo)
         descriptionSet(descr)
         specializationSet(types)
-        horseIdSet(id)
         showInfoSet(true)
-    }
-
-    let raspBtnClicked = (id: any) => {
-        navigate(id + "/calendar")
     }
 
     useEffect(() => {
         if (!fetched) {
-            fetch("https://horsehelper-backend.onrender.com/all_horses", {
-              method: "POST",
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              },
-          }
-          ).then(res=>res.json())
-          .then(response=>{
-            console.log(response)
-            horsesSet(response.horses)
-            if (response.accessToken) {
-                localStorage.setItem('token', response.accessToken)
-            }
-            fetchedSet(1)
-          })
-          .catch(er=>{
-            console.log(er.message)
-        })
+        //     fetch("https://horsehelper-backend.onrender.com/all_horses", {
+        //       method: "POST",
+        //       headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json'
+        //       },
+        //   }
+        //   ).then(res=>res.json())
+        //   .then(response=>{
+        //     console.log(response)
+        //     horsesSet(response.horses)
+        //     if (response.accessToken) {
+        //         localStorage.setItem('token', response.accessToken)
+        //     }
+        //     fetchedSet(1)
+        //   })
+        //   .catch(er=>{
+        //     console.log(er.message)
+        // })
+        trainersSet([{
+            name: "Владимир",
+  trainerPhoto: "https://www.soyuz.ru/public/uploads/files/2/7442148/2020071012030153ea07b13d.jpg",
+  trainerDescription: "КМС по выездке",
+  trainerType: "Выездка"
+        }])
+        fetchedSet(1)
         }
     })
 
     if (fetched) {
     return(
-        <div className="HorsesMainScreen">
+        <div className="TrainersMainScreen">
             <Menu isProfile={false} />
-            <div className="title">Наши лошади</div>
-            <div className="horsesDisplay">
+            <div className="title">Наши тренера</div>
+            <div className="trainersDisplay">
                 {
-                    horses.length > 0 &&
-                    horses.map((horse: any, i: number) => {
-                        let spec = ""
-                        horse.types.map((t: any, indx: any) => {
-                            if (indx > 0) {
-                                spec += ", "
-                            }
-                            spec += t
-                        })
+                    trainers.length > 0 &&
+                    trainers.map((trainer: any, i: number) => {
                         return(
                             <Card style={{ width: '20rem' }} key={i.toString()}
-                            className='cardBlock' onClick={e => {
-                                showHorseDetailed(horse.name, horse.photo, 
-                                    horse.description, spec, horse.id)
-                            }}>
-                                <Card.Img variant="top" src={horse.photo} className='cardImage'/>
+                            className='cardBlock' >
+                                <Card.Img variant="top" src={trainer.trainerPhoto} className='cardImage'/>
                                 <Card.Body>
-                                    <Card.Title>{horse.name}</Card.Title>
-                                    <Card.Subtitle className="mb-2 text-muted">Специализация: {spec}</Card.Subtitle>
-                                    {localStorage.getItem('role') == 'admin' &&
-                                    <Button variant="dark" onClick={() => raspBtnClicked(horse.id)}>Расписание</Button>
-                                    }
+                                    <Card.Title>{trainer.name}</Card.Title>
+                                    <Card.Subtitle className="mb-2 text-muted">
+                                        Специализация: {trainer.trainerType}
+                                    </Card.Subtitle>
                                 </Card.Body>
                             </Card>
                         )
                     })
                 }
 
-                <Modal show={showInfo} onHide={() => showInfoSet(false)} centered>
+                {/* <Modal show={showInfo} onHide={() => showInfoSet(false)} centered>
                             <Modal.Header closeButton>
                             <Modal.Title>{name}</Modal.Title>
                             </Modal.Header>
@@ -117,13 +108,15 @@ function Horses() {
                                 </Button>
                             </Modal.Footer>
                             }
-                </Modal>
+                </Modal> */}
             </div>
 
             {localStorage.getItem('role') == 'admin' &&
             <div className="newBtnBlock">
-                <Button className="newHorseBtn" variant='dark' size="lg"
-                onClick={() => navigate('../addhorse')}>Добавить лошадь</Button>
+                <Button className="newTrainerBtn" variant='dark' size="lg"
+                onClick={() => navigate('../addtrainer')}>
+                    Добавить тренера
+                </Button>
             </div>
             }
         </div>
@@ -136,4 +129,4 @@ function Horses() {
     }
 }
 
-export default Horses
+export default Trainers

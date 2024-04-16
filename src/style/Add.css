@@ -105,3 +105,8 @@
     padding-right: 20px;
     padding-bottom: 30px;
   }
+
+  .backButtonBlock {
+    position: absolute;
+    padding: 20px;
+  }

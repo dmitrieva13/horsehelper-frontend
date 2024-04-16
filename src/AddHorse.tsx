@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, Form, InputGroup } from 'react-bootstrap';
 import Multiselect from 'multiselect-react-dropdown';
+import { ArrowLeft } from 'react-bootstrap-icons';
 
 import './style/App.css'
 import './style/Add.css'
@@ -83,7 +84,13 @@ let onRemove = (selectedList: any, removedItem: any) => {
           ).then(res=>res.json())
           .then(response=>{
             console.log(response)
-            localStorage.setItem('token', response.accessToken)
+            if (response.error) {
+              localStorage.clear()
+              navigate('./signin')
+            }
+            if (response.accessToken) {
+              localStorage.setItem('token', response.accessToken)
+            }
           })
           .catch(er=>{
             console.log(er.message)
@@ -117,13 +124,16 @@ let onRemove = (selectedList: any, removedItem: any) => {
     // }, 2000)
 }
 
+let backClicked = () => {
+  navigate('../horses')
+}
+
   return (
     <div className="AddHorseScreen">
-        {/* <div className="createdSuccesfullyBlock invisible">
-            <div className="successText">
-              Работник {username} успешно добавлен!
-            </div>
-        </div> */}
+        <div className="backButtonBlock">
+          <ArrowLeft onClick={backClicked} size={28} style={{cursor: 'pointer'}}/>
+        </div>
+
         <div className="AddHorseInputsBlock">
             <div className="addHorseTitleBlock">
                 <div className="addHorseTitle">ДОБАВЛЕНИЕ ЛОШАДИ</div>
