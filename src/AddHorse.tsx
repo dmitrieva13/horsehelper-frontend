@@ -126,7 +126,7 @@ let onRemove = (selectedList: any, removedItem: any) => {
         </div> */}
         <div className="AddHorseInputsBlock">
             <div className="addHorseTitleBlock">
-                <div className="addWorkerTitle">ДОБАВЛЕНИЕ ЛОШАДИ</div>
+                <div className="addHorseTitle">ДОБАВЛЕНИЕ ЛОШАДИ</div>
             </div>
             <div className="typeBlockMultiselect">
                 <div className="textLong">Тип занятий, для которых подходит лошадь: *</div>
@@ -140,15 +140,16 @@ let onRemove = (selectedList: any, removedItem: any) => {
                 displayValue="name" // Property name to display in the dropdown options
                 avoidHighlightFirstOption={true}
                 showArrow={true}
+                closeOnSelect={true}
             />
             </div>
 
-            <div className="nameBlock">
+            <div className="nameHorseBlock">
                 <div className="text">Имя лошади: *</div>
                 <input className="addHorseNameInput" type="text" maxLength={30} value={name}
                                 onChange={e => nameSet(e.target.value)} />
             </div>
-            <div className="descriptionBlock">
+            <div className="descriptionHorseBlock">
                 <div className="text">Описание:</div>
                 <input className="addHorseDescInput" type="text" maxLength={1000} value={description}
                                 onChange={e => descriptionSet(e.target.value)} />

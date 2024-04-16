@@ -41,6 +41,7 @@ function SignUp() {
             localStorage.setItem('id', decoded.id)
             localStorage.setItem('name', decoded.name)
             localStorage.setItem('role', decoded.role)
+            navigate('../home')
           })
           .catch(er=>{
             console.log(er.message)

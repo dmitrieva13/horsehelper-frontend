@@ -40,7 +40,7 @@ function TrainerCalendar() {
           .then(response=>{
             if (response.error) {
                 localStorage.clear()
-            navigate('./signin')
+                navigate('./signin')
             }
 
             console.log(response)
@@ -48,6 +48,9 @@ function TrainerCalendar() {
             workingDaysSet((response.workingDays))
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
+            }
+            if (!fetched) {
+                fetchedSet(1)
             }
           })
           .catch(er=>{
@@ -163,7 +166,6 @@ function TrainerCalendar() {
         if (!fetched) {
             todaySet(new Date())
             getWorkingDays()
-            fetchedSet(1)
         }
 
         paint(new Date())

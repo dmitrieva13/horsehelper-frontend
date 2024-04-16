@@ -6,6 +6,7 @@ import { Button, Card, Image, Modal } from 'react-bootstrap';
 import './style/App.css'
 import './style/Horses.css'
 import Loading from './Loading';
+import Menu from './Menu';
 
 function Horses() {
     const [fetched, fetchedSet] = useState(0)
@@ -48,17 +49,18 @@ function Horses() {
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
             }
+            fetchedSet(1)
           })
           .catch(er=>{
             console.log(er.message)
         })
-            fetchedSet(1)
         }
     })
 
     if (fetched) {
     return(
         <div className="HorsesMainScreen">
+            <Menu />
             <div className="title">Наши лошади</div>
             <div className="horsesDisplay">
                 {
@@ -117,6 +119,13 @@ function Horses() {
                             }
                 </Modal>
             </div>
+
+            {localStorage.getItem('role') == 'admin' &&
+            <div className="newBtnBlock">
+                <Button className="newHorseBtn" variant='dark'
+                onClick={() => navigate('../addhorse')}>Добавить лошадь</Button>
+            </div>
+            }
         </div>
     )
     }

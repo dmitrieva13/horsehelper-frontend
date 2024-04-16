@@ -7,6 +7,7 @@ import { ru } from 'date-fns/locale';
 
 import './style/App.css'
 import './style/Booking.css'
+import Menu from './Menu';
 
 
 function OnlineBooking() {
@@ -187,6 +188,7 @@ function OnlineBooking() {
 
     return (
         <div className='booking'>
+            <Menu />
             <div className="title">Запись на тренировку</div>
 
             <div className="typeSelection">

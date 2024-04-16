@@ -30,8 +30,8 @@
     font-size: 18px;
 }
 
-.roleBlock, .usernameBlock, .phoneBlock, .passwordBlock, .descriptionBlock,
-.photoBlock, .nameBlock, .descriptionInputBlock {
+.roleBlock, .usernameBlock, .phoneBlock, .passwordBlock,
+.photoBlock, .nameHorseBlock, .descriptionInputBlock, .descriptionHorseBlock {
     display: flex;
     flex-direction: row;
     column-gap: 10px;

@@ -8,6 +8,7 @@ import './style/App.css'
 import './style/HomePage.css'
 import Announcement from './Announcement';
 import Loading from './Loading';
+import Menu from './Menu';
 
 function HomePage() {
     const [fetched, fetchedSet] = useState(0)
@@ -45,7 +46,9 @@ function HomePage() {
                 return new Date(a.date).getTime() - new Date(b.date).getTime()
             }).reverse()
             announcementsSet(news)
-            fetchedSet(1)
+            if (!fetched) {
+                fetchedSet(1)
+            }
           })
           .catch(er=>{
             console.log(er.message)
@@ -96,6 +99,7 @@ function HomePage() {
     if (fetched) {
     return(
         <div className="homePage">
+            <Menu />
             <div className="titleBlock">Наши новости</div>
             <div className="announcementsBlock">
                 {announcements.length > 0 &&
