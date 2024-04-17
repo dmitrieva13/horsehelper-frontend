@@ -1,0 +1,11 @@
+.bookingsBlock {
+    width: 100%;
+    padding: 40px;
+}
+
+.bookingInfo {
+    width: 100%;
+    background-color:chartreuse;
+    padding: 20px;
+    border-radius: 20px;
+}

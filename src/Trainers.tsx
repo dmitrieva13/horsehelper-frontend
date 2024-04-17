@@ -20,12 +20,18 @@ function Trainers() {
 
     const navigate = useNavigate()
 
-    let showHorseDetailed = (name: any, photo: any, descr: any, types: any, id: any) => {
-        nameSet(name)
-        photoSet(photo)
-        descriptionSet(descr)
-        specializationSet(types)
+    let showTrainerDetailed = (trainer: any) => {
+        nameSet(trainer.name)
+        photoSet(trainer.trainerPhoto)
+        descriptionSet(trainer.trainerDescription)
+        specializationSet(trainer.trainerType)
+        trainerIdSet(trainer.id)
         showInfoSet(true)
+    }
+
+    let viewTrainerProfileClciked = (id: any) => {
+        showInfoSet(false)
+        navigate('../user/' + id)
     }
 
     useEffect(() => {
@@ -53,7 +59,8 @@ function Trainers() {
             name: "Владимир",
   trainerPhoto: "https://www.soyuz.ru/public/uploads/files/2/7442148/2020071012030153ea07b13d.jpg",
   trainerDescription: "КМС по выездке",
-  trainerType: "Выездка"
+  trainerType: "Выездка",
+  id: '2743597'
         }])
         fetchedSet(1)
         }
@@ -70,7 +77,8 @@ function Trainers() {
                     trainers.map((trainer: any, i: number) => {
                         return(
                             <Card style={{ width: '20rem' }} key={i.toString()}
-                            className='cardBlock' >
+                            className='cardBlock' 
+                            onClick={() => showTrainerDetailed(trainer)}>
                                 <Card.Img variant="top" src={trainer.trainerPhoto} className='cardImage'/>
                                 <Card.Body>
                                     <Card.Title>{trainer.name}</Card.Title>
@@ -83,7 +91,7 @@ function Trainers() {
                     })
                 }
 
-                {/* <Modal show={showInfo} onHide={() => showInfoSet(false)} centered>
+                <Modal show={showInfo} onHide={() => showInfoSet(false)} centered>
                             <Modal.Header closeButton>
                             <Modal.Title>{name}</Modal.Title>
                             </Modal.Header>
@@ -100,15 +108,13 @@ function Trainers() {
                                 </div>
                             </div>
                             </Modal.Body>
-                            {localStorage.getItem('role') == 'admin' &&
                             <Modal.Footer>
-                                <Button variant='dark' className='btnCard'
-                                onClick={() => raspBtnClicked(horseId)}>
-                                    Расписание
+                                <Button variant='secondary' className='viewProfileBtn'
+                                onClick={() => viewTrainerProfileClciked(trainerId)}>
+                                    Смотреть профиль
                                 </Button>
                             </Modal.Footer>
-                            }
-                </Modal> */}
+                </Modal>
             </div>
 
             {localStorage.getItem('role') == 'admin' &&

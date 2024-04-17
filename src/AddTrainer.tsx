@@ -83,7 +83,7 @@ function AddTrainer() {
             console.log(response)
             if (response.error) {
               localStorage.clear()
-              navigate('./signin')
+              navigate('../signin')
             }
             if (response.accessToken) {
               localStorage.setItem('token', response.accessToken)

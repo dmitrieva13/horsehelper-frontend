@@ -44,7 +44,7 @@ function HorseCalendar() {
             console.log(response)
             if (response.error) {
                 localStorage.clear()
-                navigate('./signin')
+                navigate('../signin')
             }
             unavailableArrSet(response.unavailableDays)
             console.log(response.unavailableDays)

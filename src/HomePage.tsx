@@ -111,10 +111,12 @@ function HomePage() {
                 }
             </div>
 
+            {localStorage.getItem('role') == 'admin' &&
             <div className="newBtnBlock">
                 <Button className="newAnnouncementBtn" variant='dark' size='lg'
                 onClick={handleShow}>Добавить объявление</Button>
             </div>
+            }
 
             <Modal show={showModal} onHide={handleClose}>
                 <Modal.Header closeButton>

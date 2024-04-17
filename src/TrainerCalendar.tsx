@@ -18,6 +18,7 @@ function TrainerCalendar() {
     const navigate = useNavigate()
 
     const [fetched, fetchedSet] = useState(0)
+    const [drawData, drawDataSet] = useState(0)
     const [day, daySet] = useState<Value>(null)
     const [today, todaySet] = useState<Date>(null)
     const [isWorking, isWorkingSet] = useState(true)
@@ -40,7 +41,7 @@ function TrainerCalendar() {
           .then(response=>{
             if (response.error) {
                 localStorage.clear()
-                navigate('./signin')
+                navigate('../signin')
             }
 
             console.log(response)
@@ -48,9 +49,6 @@ function TrainerCalendar() {
             workingDaysSet((response.workingDays))
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
-            }
-            if (!fetched) {
-                fetchedSet(1)
             }
           })
           .catch(er=>{
@@ -124,6 +122,7 @@ function TrainerCalendar() {
 
     let paint = (date:any) => {
         let month = date.getMonth()
+        console.log("month", month);
 
         let monthDates:String[] = []
         workingDays.forEach(d => {
@@ -133,51 +132,51 @@ function TrainerCalendar() {
             }
         })
 
-        // console.log(monthDates)
+        console.log(monthDates)
         setTimeout(() => {
             document.querySelectorAll("abbr").forEach(a => {
                 if (monthDates.includes(a.innerHTML)) {
-                    a.parentElement.style.backgroundColor = 'LightPink'
+                    a.parentElement.style.backgroundColor = 'BurlyWood'
                 } else {
                     a.parentElement.style.backgroundColor = ''
                 }
             })
+
+            if (!drawData) {
+                drawDataSet(1)
+            }
         }, 0)
     }
 
     let change = (e: any) => {
-        // console.log(e)
+        console.log(e)
         if (e.view == "month") {
             let date = new Date(e.activeStartDate)
             paint(date)
         }
     }
 
-    let dates = [
-        new Date("2024-04-23T21:00:00.000+00:00"),
-        new Date("2024-04-27T21:00:00.000+00:00"),
-        new Date("2024-04-28T21:00:00.000+00:00"),
-        new Date("2024-05-01T21:00:00.000+00:00"),
-        new Date("2024-05-27T21:00:00.000+00:00"),
-        new Date("2024-05-29T21:00:00.000+00:00")
-    ]
-
     useEffect(() => {
         if (!fetched) {
             todaySet(new Date())
             getWorkingDays()
+            setTimeout(() => {
+                fetchedSet(1)
+            }, 0)
         }
 
-        paint(new Date())
+        let date = day == null ? new Date() : day
+
+        paint(date)
     })
 
     
 
-    if (fetched) {
+    if (fetched && drawData) {
     return(
         <div className="trainerCalendarScreen">
             <div className="backBtnCalendar">
-                <CloseButton onClick={() => navigate("../horses")} />
+                <CloseButton onClick={() => navigate("../user/" + userId)} />
             </div>
             <div className="title">Расписание</div>
 
