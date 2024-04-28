@@ -91,6 +91,7 @@ let onRemove = (selectedList: any, removedItem: any) => {
             if (response.accessToken) {
               localStorage.setItem('token', response.accessToken)
             }
+            navigate('../horses')
           })
           .catch(er=>{
             console.log(er.message)

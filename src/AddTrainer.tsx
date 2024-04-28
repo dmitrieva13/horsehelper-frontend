@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, Form, InputGroup } from 'react-bootstrap';
 import { jwtDecode } from "jwt-decode";
+import { ArrowLeft } from 'react-bootstrap-icons';
 
 import './style/App.css'
 import './style/Add.css'
@@ -88,6 +89,7 @@ function AddTrainer() {
             if (response.accessToken) {
               localStorage.setItem('token', response.accessToken)
             }
+            navigate('../trainers')
           })
           .catch(er=>{
             console.log(er.message)
@@ -124,6 +126,10 @@ function AddTrainer() {
     // }, 2000)
 }
 
+  let backClicked = () => {
+    navigate('../trainers')
+  }
+
   return (
     <div className="AddWorkerScreen">
         {/* <div className="createdSuccesfullyBlock invisible">
@@ -132,6 +138,9 @@ function AddTrainer() {
             </div>
         </div> */}
         <div className="AddWorkerInputsBlock">
+          <div className="backButtonBlock">
+            <ArrowLeft onClick={backClicked} size={28} style={{cursor: 'pointer'}}/>
+          </div>
             <div className="addWorkerTitleBlock">
                 <div className="addWorkerTitle">ДОБАВЛЕНИЕ ТРЕНЕРА</div>
             </div>

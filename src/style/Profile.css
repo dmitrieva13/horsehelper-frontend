@@ -22,12 +22,18 @@
 
 .nameBlock {
     font-size: larger;
+    padding-bottom: 10px;
 }
 
 .descriptionBlock {
-    padding-left: 40px;
-    padding-right: 40px;
-    padding-bottom: 40px;
+    padding-top: 20px;
+    /* padding-left: 20px;
+    padding-right: 20px; */
+    padding-bottom: 20px;
+    margin-left: 40px;
+    margin-right: 40px;
+    /* border-top: 2px solid rgb(244, 196, 48); */
+    border-bottom: 2px solid rgb(244, 196, 48);
 }
 
 .defaultText {
@@ -56,7 +62,7 @@
 }
 
 .editBtn:hover {
-    text-shadow: 0px 0px 10.5px #ababab;
+    color: black;
     transition-duration: 0.5s;
 }
 
@@ -107,19 +113,23 @@
 
 .studentsListBlock {
     width: 100%;
-    text-align: center;
-    padding-bottom: 50px;
+    /* text-align: center; */
+    padding-bottom: 20px;
+    padding-left: 40px;
+    padding-right: 20px;
+    padding-top: 10px;
 }
 
 .studentsList {
     cursor: pointer;
     color: #454545;
-    font-weight: 300;
-    text-decoration: underline;
-    padding-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    column-gap: 8px;
+    align-items:flex-end;
 }
 
 .studentsList:hover {
-    text-shadow: 0px 0px 5px #ababab;
+    color: black;
     transition-duration: 0.5s;
 }

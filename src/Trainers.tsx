@@ -36,32 +36,32 @@ function Trainers() {
 
     useEffect(() => {
         if (!fetched) {
-        //     fetch("https://horsehelper-backend.onrender.com/all_horses", {
-        //       method: "POST",
-        //       headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json'
-        //       },
-        //   }
-        //   ).then(res=>res.json())
-        //   .then(response=>{
-        //     console.log(response)
-        //     horsesSet(response.horses)
-        //     if (response.accessToken) {
-        //         localStorage.setItem('token', response.accessToken)
-        //     }
-        //     fetchedSet(1)
-        //   })
-        //   .catch(er=>{
-        //     console.log(er.message)
-        // })
-        trainersSet([{
-            name: "Владимир",
-  trainerPhoto: "https://www.soyuz.ru/public/uploads/files/2/7442148/2020071012030153ea07b13d.jpg",
-  trainerDescription: "КМС по выездке",
-  trainerType: "Выездка",
-  id: '2743597'
-        }])
+            fetch("https://horsehelper-backend.onrender.com/all_trainers", {
+              method: "POST",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+          }
+          ).then(res=>res.json())
+          .then(response=>{
+            console.log(response)
+            trainersSet(response.trainers)
+            if (response.accessToken) {
+                localStorage.setItem('token', response.accessToken)
+            }
+            fetchedSet(1)
+          })
+          .catch(er=>{
+            console.log(er.message)
+        })
+//         trainersSet([{
+//             name: "Владимир",
+//   trainerPhoto: "https://www.soyuz.ru/public/uploads/files/2/7442148/2020071012030153ea07b13d.jpg",
+//   trainerDescription: "КМС по выездке",
+//   trainerType: "Выездка",
+//   id: '2743597'
+//         }])
         fetchedSet(1)
         }
     })

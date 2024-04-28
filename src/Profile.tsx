@@ -2,7 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button, ListGroup, Image, Modal } from 'react-bootstrap';
-import { Pencil } from 'react-bootstrap-icons';
+import { Pencil, PersonLinesFill } from 'react-bootstrap-icons';
 
 import './style/App.css'
 import './style/Profile.css'
@@ -55,11 +55,36 @@ function Profile() {
         navigate('../user/' + stId)
     }
 
+    let getProfileData = () => {
+        fetch("https://horsehelper-backend.onrender.com/get_profile", {
+              method: "POST",
+              body: JSON.stringify({
+                    id: userId
+                }),
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+          }
+          ).then(res=>res.json())
+          .then(response=>{
+            console.log(response)
+            // unavailableArrSet(response.unavailableDays)
+            if (response.accessToken) {
+                localStorage.setItem('token', response.accessToken)
+            }
+          })
+          .catch(er=>{
+            console.log(er.message)
+        })
+    }
+
     useEffect(() => {
         if (!fetched) {
-            roleSet('trainer')
+            getProfileData()
+            roleSet("trainer")
             studentsListSet(stList)
-            photoSet("https://www.soyuz.ru/public/uploads/files/2/7442148/2020071012030153ea07b13d.jpg")
+            // photoSet("https://www.soyuz.ru/public/uploads/files/2/7442148/2020071012030153ea07b13d.jpg")
             fetchedSet(1)
         }
     })
@@ -84,7 +109,8 @@ function Profile() {
             {role == 'trainer' &&
             <div className="studentsListBlock">
                 <div className="studentsList" onClick={() => showListSet(true)}>
-                    Список учеников
+                    <PersonLinesFill />
+                    ученики
                 </div>
                 {userId != localStorage.getItem('id') && 
                 localStorage.getItem('role') == 'student' &&

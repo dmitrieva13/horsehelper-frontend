@@ -19,7 +19,31 @@ function ProfileEdit() {
     }
 
     let saveClicked = () => {
-        navigate('../user/' + userId)
+        fetch("https://horsehelper-backend.onrender.com/change_profile", {
+              method: "POST",
+              body: JSON.stringify({
+                    id: userId,
+                    userPic: photo,
+                    userDescription: description,
+                    accessToken: localStorage.getItem('token')
+                }),
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+          }
+          ).then(res=>res.json())
+          .then(response=>{
+            console.log(response)
+            // unavailableArrSet(response.unavailableDays)
+            if (response.accessToken) {
+                localStorage.setItem('token', response.accessToken)
+            }
+            navigate('../user/' + userId)
+          })
+          .catch(er=>{
+            console.log(er.message)
+        })
     }
 
     return(
@@ -32,12 +56,12 @@ function ProfileEdit() {
             <div className="inputsEditBlock">
                 <div className="photoEditBlock">
                     <div className="inputEditText">Ссылка на фото:</div>
-                    <input className="photoInput" type="text" maxLength={500} value={photo} 
+                    <input className="photoInput" id="photoInput" type="text" maxLength={500} value={photo} 
                     onChange={e => photoSet(e.target.value)} />
                 </div>
                 <div className="descEditBlock">
                     <div className="inputEditText">Описание:</div>
-                    <input className="descrInput" type="text" maxLength={1000} value={description} 
+                    <input className="descrInput" id="descrInput" type="text" maxLength={1000} value={description} 
                     onChange={e => descriptionSet(e.target.value)} />
                 </div>
             </div>

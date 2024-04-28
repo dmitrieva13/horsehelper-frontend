@@ -71,7 +71,7 @@ function Menu(props: {isProfile: boolean}) {
                 { props.isProfile &&
                 <div className="logoutBtn" onClick={logoutClicked}>
                     Выйти
-                    <BoxArrowRight size={20} color='red' />
+                    <BoxArrowRight size={20} color='#92000a' />
                 </div>
                 }
             </div>

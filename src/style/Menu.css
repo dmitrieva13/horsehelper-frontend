@@ -28,7 +28,7 @@
 }
 
 .logoutBtn {
-    color: red;
+    color: #92000a;
     display: flex;
     flex-direction: row;
     column-gap: 5px;
