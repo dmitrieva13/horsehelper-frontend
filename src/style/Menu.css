@@ -14,7 +14,7 @@
 }
 
 .menuBtn:hover {
-    text-shadow: 0px 0px 10.5px #454545;
+    text-shadow: 0px 0px 10.5px rgb(107, 142, 35);
     transition-duration: 0.5s;
 }
 
@@ -22,10 +22,10 @@
     cursor: pointer;
 }
 
-.profileBtn:hover {
+/* .profileBtn:hover {
     text-shadow: 0px 0px 10.5px #454545;
     transition-duration: 0.5s;
-}
+} */
 
 .logoutBtn {
     color: #92000a;
@@ -43,4 +43,27 @@
     justify-content: space-between;
     padding: 40px;
     position: absolute;
+}
+
+.profileBlock {
+    display: flex;
+    flex-direction: row;
+    column-gap: 20px;
+    justify-content: center;
+}
+
+.notificationsBlock {
+    position: relative;
+}
+
+.badge {
+    position: absolute;
+    font-size: xx-small;
+    width: 12px;
+    max-width: 12px;
+    height: 12px;
+    display: block;
+    top: 18%;
+    left: 55%;
+    z-index: 10;
 }

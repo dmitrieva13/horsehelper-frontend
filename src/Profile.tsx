@@ -7,6 +7,7 @@ import { Pencil, PersonLinesFill } from 'react-bootstrap-icons';
 import './style/App.css'
 import './style/Profile.css'
 import Menu from './Menu';
+import Loading from './Loading';
 
 function Profile() {
     const { userId } = useParams();
@@ -70,6 +71,10 @@ function Profile() {
           .then(response=>{
             console.log(response)
             // unavailableArrSet(response.unavailableDays)
+            nameSet(response.name)
+            descriptionSet(response.userDescription)
+            photoSet(response.userPic)
+            roleSet(response.role)
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
             }
@@ -82,28 +87,30 @@ function Profile() {
     useEffect(() => {
         if (!fetched) {
             getProfileData()
-            roleSet("trainer")
             studentsListSet(stList)
-            // photoSet("https://www.soyuz.ru/public/uploads/files/2/7442148/2020071012030153ea07b13d.jpg")
             fetchedSet(1)
+            // photoSet("https://www.soyuz.ru/public/uploads/files/2/7442148/2020071012030153ea07b13d.jpg")
         }
     })
 
+    if (fetched && name != "") {
     return(
         <div className="profileScreen">
             <Menu isProfile={userId == localStorage.getItem('id')} />
             <div className="mainInfoBlock">
                 <div className="imageBlock">
                     {photo != "" &&
-                    <Image className='avatarImg' src={photo} roundedCircle fluid />}
+                    <Image className='avatarImg' src={photo} hidden={!photo} roundedCircle fluid />}
                     {/* {photo == "" && 
                     <Image src="https://static.thenounproject.com/png/1095867-200.png" roundedCircle fluid/>} */}
                 </div>
-                <div className="nameBlock">Name{name}</div>
+                <div className="nameBlock">{name}</div>
             </div>
             <div className="descriptionBlock">
-                <div className="defaultText">О себе:</div>
-                DDd{description}
+                <div className="defaultText" >О себе:</div>
+                <div style={{color: description != "" ? "#454545" : "black"}}>
+                    {description ? description : "Описание еще не добавлено"}
+                </div>
             </div>
 
             {role == 'trainer' &&
@@ -114,9 +121,9 @@ function Profile() {
                 </div>
                 {userId != localStorage.getItem('id') && 
                 localStorage.getItem('role') == 'student' &&
-                <Button variant='outline-dark' >
-                        Добавиться в ученики
-                </Button>
+                <button className='oliveBtn' style={{fontSize: "small"}}>
+                        Добавиться
+                </button>
                 }
             </div>
             }
@@ -175,7 +182,12 @@ function Profile() {
             </Modal>
 
         </div>
-    )
+    )}
+    else {
+        return(
+            <Loading />
+        )
+    }
 }
 
 export default Profile

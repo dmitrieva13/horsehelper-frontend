@@ -15,6 +15,19 @@ button {
     padding-right: 10px;
     border-color: black;
     background-color: white;
+    cursor: pointer;
+}
+
+.oliveBtn {
+    border-radius: 10px;
+    background-color: rgb(107, 142, 35);
+    border: none;
+    color: white;
+}
+
+.oliveBtn:hover {
+    box-shadow: 0px 0px 5px 3px rgba(0,0,0,0.25);
+    transition-duration: 0.3s;
 }
 
 input {

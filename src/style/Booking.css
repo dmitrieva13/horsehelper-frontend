@@ -68,3 +68,18 @@
 .SignupBtn {
     margin-bottom: 40px;
 }
+
+.horseListBlock, .trainerListBlock {
+    display: flex;
+    flex-direction: row;
+    column-gap: 20px;
+    align-items: center;
+}
+
+.bookingListImg {
+    object-fit: cover;
+    height: 80px;
+    max-height: 80px;
+    width: 80px;
+    max-width: 80px;
+}

@@ -1,17 +1,20 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Col, Modal, Button, Form, Container, ListGroup } from 'react-bootstrap';
+import { Col, Modal, Button, Form, Container, ListGroup, Image } from 'react-bootstrap';
 import { ScheduleMeeting } from 'react-schedule-meeting';
 import { ru } from 'date-fns/locale';
 
 import './style/App.css'
 import './style/Booking.css'
 import Menu from './Menu';
+import Loading from './Loading';
+import Message from './Message';
 
 
 function OnlineBooking() {
     const [fetched, fetchedSet] = useState(0)
+    const [timeFetched, timeFetchedSet] = useState(0)
     const [showTrainer, showTrainerSet] = useState(false)
     const [showHorse, showHorseSet] = useState(false)
     const [today, todaySet] = useState("")
@@ -21,9 +24,10 @@ function OnlineBooking() {
     const [trainersAvailable, trainersAvailableSet] = useState<any[]>([])
     const [horsesAvailable, horsesAvailableSet] = useState<any[]>([])
     const [time, timeSet] = useState<Date>(null)
-    const [trainer, trainerSet] = useState("")
+    const [trainer, trainerSet] = useState(null)
     const [horse, horseSet] = useState(null)
     const [comment, commentSet] = useState("")
+    const [success, successSet] = useState(false)
     
     const navigate = useNavigate()
     const allTypes = ["Общая", "Выездка", "Конкур"]
@@ -90,6 +94,69 @@ function OnlineBooking() {
         };
       });
 
+    let createSlots = (date: Date, times: any[]) => {
+        let slots: any[] = []
+        times.forEach((t: any) => {
+            console.log(t);
+            
+            if (t.isAvailable) {
+                let newDate = new Date(date)
+                newDate.setHours(t.time)
+                let endDate = new Date((new Date(newDate)).setMinutes(newDate.getMinutes() + 60))
+                let slot = {
+                    start: newDate,
+                    end: endDate,
+                    trainers: t.trainersAtSlot,
+                    horses: t.horsesAtSlot
+                }
+                slots.push(slot)
+            }
+        })
+        return slots
+    }
+
+    let getSlots = () => {
+    fetch("https://horsehelper-backend.onrender.com/get_slots_for_booking", {
+            method: "POST",
+            body: JSON.stringify({
+                type: type,
+                accessToken: localStorage.getItem('token')
+            }),
+            headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+            },
+        }
+        ).then(res=>res.json())
+        .then(response=>{
+        console.log(response)
+        if (response.error) {
+            localStorage.clear()
+            navigate('../signin')
+        }
+
+        let data = response.message
+        let slotsAll: any[] = []
+        data.forEach((el: any) => {
+            let slots = createSlots(new Date(el.date), el.timeslots)
+            slotsAll = [...slotsAll, ...slots]
+        })
+        console.log(slotsAll)
+        timeslotsSet(slotsAll)
+
+        timeFetchedSet(1)
+        makeVisisble("timeTrainerSelection")
+        makeInvisisble("nextBtnBlock")
+        
+        if (response.accessToken) {
+            localStorage.setItem('token', response.accessToken)
+        }
+        })
+        .catch(er=>{
+        console.log(er.message)
+    })
+}
+
     let makeVisisble = (className: string) => {
         let divClass = document.querySelector("." + className)
         if (divClass != null) {
@@ -106,35 +173,35 @@ function OnlineBooking() {
 
     let getAvailableTimeslot = (type: string) => {
         let arr: any[] = []
-        let times: Date[] = []
-        dates.map((date: any, i: number) => {
-            if (date.type == type) {
-                arr.push(date)
-                times.push(new Date(Date.parse(date.start)))
-            }
-        })
-        // Array(arr).forEach((val: any, i: any) => times.push(Date.parse(val.start)))
-        // console.log(times)
-        let uniqueTimes = Array.from(new Set(times))
-        let slots = uniqueTimes.map((t: Date, i: any) => {
-            let tEnd = new Date(t)
-            
-            return {
-                startTime: t,
-                endTime: new Date(tEnd.setHours(tEnd.getHours()+1)),
+        // let times: Date[] = []
+        timeslots.map((slot: any, i: number) => {
+            arr.push({
+                startTime: slot.start,
+                endTime: slot.end,
                 id: i
-            }
+            })
         })
         
-        console.log(slots)
-        return slots
+        // console.log(arr)
+        return arr
+    }
 
+    let getAvailableTrainersAndHorses = (start: Date) => {
+        let slot = timeslots.find((ts) => {
+            return ts.start.getTime() == start.getTime()
+        })
+        console.log("slot", slot)
+        if (slot) {
+            trainersAvailableSet(slot.trainers)
+            horsesAvailableSet(slot.horses)
+        }
     }
 
     let typeNextClicked = () => {
         typeDisabledSet(true)
-        makeVisisble("timeTrainerSelection")
-        makeInvisisble("nextBtnBlock")
+        if (!timeFetched) {
+            getSlots()
+        }
     }
 
     let backClicked = () => {
@@ -145,38 +212,57 @@ function OnlineBooking() {
           divClass.className = "centeredDiv nextBtnBlock"
         }
         timeSet(null)
-        trainerSet("")
+        trainerSet(null)
         horseSet(null)
         commentSet("")
+        timeFetchedSet(0)
     }
 
-    let timeSelected = (start: any) => {
-        let time = Date.parse(start.startTime)
-        let trainers: any[] = []
-        dates.map((date: any) => {
-            if (Date.parse(date.start) == time && date.type == type) {
-                trainers.push(date.trainer)
-            }
-        })
-        console.log(trainers);
-        trainersAvailableSet(trainers)
-        horsesAvailableSet(all_horses)
-        timeSet(start.startTime)
-        trainerSet("")
+    let timeSelected = (time: any) => {
+        let start = time.startTime
+        getAvailableTrainersAndHorses(start)
+        timeSet(start)
+        trainerSet(null)
         horseSet(null)
         makeInvisisble("calendarBlockBooking")
     }
 
     let signupBtnClicked = () => {
-        let data = {
-            student: "student",
-            type: type,
-            trainer: trainer,
-            horse: horse.name,
-            timeStart: time,
-            commentary: comment
-        }
-        console.log(data)
+        fetch("https://horsehelper-backend.onrender.com/new_booking", {
+            method: "POST",
+            body: JSON.stringify({
+                trainerId: trainer.id,
+                horseId: horse.id,
+                date: time,
+                type: type,
+                comment: comment,
+                accessToken: localStorage.getItem('token')
+            }),
+            headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+            },
+        }).then(res=>res.json())
+        .then(response=>{
+            console.log(response)
+            if (response.error) {
+                localStorage.clear()
+                navigate('../signin')
+            }
+            
+            if (response.accessToken) {
+                localStorage.setItem('token', response.accessToken)
+            }
+            
+            successSet(true)
+            setTimeout(() => {
+                successSet(false)
+                navigate("../home")
+            }, 200)
+        })
+        .catch(er=>{
+            console.log(er.message)
+        })
     }
 
     useEffect(() => {
@@ -231,7 +317,7 @@ function OnlineBooking() {
                     <div className="calendarBlockBooking hidden">
                         <ScheduleMeeting
                             borderRadius={20}
-                            primaryColor="#000000"
+                            primaryColor="rgb(107, 142, 35)"
                             eventDurationInMinutes={60}
                             eventStartTimeSpreadInMinutes={0}
                             availableTimeslots={getAvailableTimeslot(type)}
@@ -252,10 +338,10 @@ function OnlineBooking() {
                             <Button variant="outline-dark" 
                             onClick={e => showTrainerSet(true)} 
                             disabled={time == null} size="lg">
-                {trainer == "" && "Тренер еще не выбран"}
-                {trainer != "" && 
-                    <div className="trainerInfo">{trainer}</div>
-                }
+                                {trainer == null && "Тренер еще не выбран"}
+                                {trainer != null && 
+                                    <div className="trainerInfo">{trainer.name}</div>
+                                }
                             </Button>
                         </div>
 
@@ -264,20 +350,27 @@ function OnlineBooking() {
                             <Modal.Title>Свободные тренера</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
-                                <ListGroup as="ol">
+                                <ListGroup as="ol" variant="flush">
                                     {trainersAvailable.map((t: any, i: any) => {
                                         return(
                                             <ListGroup.Item as="li"
-                            className="d-flex justify-content-between align-items-start"
-                        action active={t == trainer} 
-                        onClick={e => {
-                            trainerSet(t)
-                            showTrainerSet(false)
-                        }}>
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">{t}</div>
-                            </div>
-                        </ListGroup.Item>
+                                            className="d-flex justify-content-between align-items-start"
+                                            action active={trainer != null && t.id == trainer.id} 
+                                            onClick={e => {
+                                                trainerSet(t)
+                                                showTrainerSet(false)
+                                            }}
+                                            style={{cursor: "pointer"}}>
+                                                <div className="ms-2 me-auto">
+                                                    <div className="trainerListBlock">
+                                                        <Image className='bookingListImg' src={t.photo} fluid roundedCircle />
+                                                        <div className="trainerListText">
+                                                            <div className="fw-bold">{t.name}</div>
+                                                            {t.description}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </ListGroup.Item>
                                         )
                                     })}
                                 </ListGroup>
@@ -294,10 +387,10 @@ function OnlineBooking() {
                             <Button variant="outline-dark" 
                             onClick={e => showHorseSet(true)} 
                             disabled={time == null} size="lg">
-                {horse == null && "Лошадь еще не выбрана"}
-                {horse != null && 
-                    <div className="horseInfo">{horse.name}</div>
-                }
+                                {horse == null && "Лошадь еще не выбрана"}
+                                {horse != null && 
+                                    <div className="horseInfo">{horse.name}</div>
+                                }
                             </Button>
                         </div>
 
@@ -307,21 +400,27 @@ function OnlineBooking() {
                             <Modal.Title>Свободные лошади</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
-                                <ListGroup as="ol">
+                                <ListGroup as="ol" variant="flush">
                                     {horsesAvailable.map((h: any, i: any) => {
                                         return(
                                             <ListGroup.Item as="li"
-                            className="d-flex justify-content-between align-items-start"
-                        action active={horse != null && h.name == horse.name} 
-                        onClick={e => {
-                            horseSet(h)
-                            showHorseSet(false)
-                        }}>
-                            <div className="ms-2 me-auto">
-                            <div className="fw-bold">{h.name}</div>
-                            {h.description}
-                            </div>
-                        </ListGroup.Item>
+                                            className="d-flex justify-content-between align-items-start"
+                                            action active={horse != null && h.id == horse.id} 
+                                            onClick={e => {
+                                                horseSet(h)
+                                                showHorseSet(false)
+                                            }}
+                                            style={{cursor: "pointer"}}>
+                                                <div className="ms-2 me-auto">
+                                                    <div className="horseListBlock">
+                                                        <Image className='bookingListImg' src={h.photo} fluid roundedCircle />
+                                                        <div className="horseListText">
+                                                            <div className="fw-bold">{h.name}</div>
+                                                            {h.description}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </ListGroup.Item>
                                         )
                                     })}
                                 </ListGroup>
@@ -341,6 +440,13 @@ function OnlineBooking() {
                     disabled={time == null || trainer == "" || horse==null}
                     onClick={signupBtnClicked}>Записаться</Button>
                 </div>
+            </div>
+
+            {(!timeFetched && typeDisabled) && 
+            <Loading />}
+
+            <div className="messageDiv" hidden={!success}>
+                <Message message='Вы успешно записались на тренировку!' />
             </div>
         </div>
     )

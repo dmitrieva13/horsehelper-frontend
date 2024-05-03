@@ -32,7 +32,7 @@
     padding-bottom: 20px;
     margin-left: 40px;
     margin-right: 40px;
-    /* border-top: 2px solid rgb(244, 196, 48); */
+    border-top: 2px solid rgb(244, 196, 48);
     border-bottom: 2px solid rgb(244, 196, 48);
 }
 
@@ -59,6 +59,7 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    margin-top: 10px;
 }
 
 .editBtn:hover {
@@ -118,6 +119,9 @@
     padding-left: 40px;
     padding-right: 20px;
     padding-top: 10px;
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
 }
 
 .studentsList {
@@ -127,6 +131,7 @@
     flex-direction: row;
     column-gap: 8px;
     align-items:flex-end;
+    padding-bottom: 10px;
 }
 
 .studentsList:hover {

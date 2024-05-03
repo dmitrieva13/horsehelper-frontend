@@ -6,16 +6,43 @@ import { ArrowLeft } from 'react-bootstrap-icons';
 
 import './style/App.css'
 import './style/Profile.css'
+import Loading from './Loading';
 
 function ProfileEdit() {
     const { userId } = useParams();
     const navigate = useNavigate()
 
+    const [fetched, fetchedSet] = useState(0)
     const [photo, photoSet] = useState("")
     const [description, descriptionSet] = useState("")
 
     let backClicked = () => {
         navigate('../user/' + userId)
+    }
+
+    let getProfileData = () => {
+        fetch("https://horsehelper-backend.onrender.com/get_profile", {
+              method: "POST",
+              body: JSON.stringify({
+                    id: userId
+                }),
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+          }
+          ).then(res=>res.json())
+          .then(response=>{
+            console.log(response)
+            descriptionSet(response.userDescription ? response.userDescription : "")
+            photoSet(response.userPic ? response.userPic : "")
+            if (response.accessToken) {
+                localStorage.setItem('token', response.accessToken)
+            }
+          })
+          .catch(er=>{
+            console.log(er.message)
+        })
     }
 
     let saveClicked = () => {
@@ -46,6 +73,15 @@ function ProfileEdit() {
         })
     }
 
+    useEffect(() => {
+        if (!fetched) {
+            getProfileData()
+            fetchedSet(1)
+            // photoSet("https://www.soyuz.ru/public/uploads/files/2/7442148/2020071012030153ea07b13d.jpg")
+        }
+    })
+
+    if (fetched) {
     return(
         <div className="profileEditScreen">
             <div className="backButtonBlock">
@@ -72,7 +108,12 @@ function ProfileEdit() {
                 </Button>
             </div>
         </div>
-    )
+    )}
+    else {
+        return(
+            <Loading />
+        )
+    }
 }
 
 export default ProfileEdit

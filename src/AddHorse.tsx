@@ -143,7 +143,6 @@ let backClicked = () => {
                 <div className="textLong">Тип занятий, для которых подходит лошадь: *</div>
                 <Multiselect className='selection'
                 placeholder='Типы тренировок'
-                style={{border: "none"}}
                 hidePlaceholder={true}
                 options={types} 
                 onSelect={onSelect} // Function will trigger on select event

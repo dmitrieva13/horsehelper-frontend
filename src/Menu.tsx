@@ -1,8 +1,8 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Button, Offcanvas } from 'react-bootstrap';
-import { List, BoxArrowRight } from 'react-bootstrap-icons';
+import { Button, Offcanvas, Badge } from 'react-bootstrap';
+import { List, BoxArrowRight, Bell } from 'react-bootstrap-icons';
 
 import './style/App.css'
 import './style/Menu.css'
@@ -66,7 +66,13 @@ function Menu(props: {isProfile: boolean}) {
             <div className="topHolder">
                 <List className='menuIcon' onClick={handleShow} size={28}/>
                 { !props.isProfile &&
-                <div className="profileBtn" onClick={profileClicked}>{localStorage.getItem('name')}</div>
+                <div className="profileBlock">
+                    <div className="notificationsBlock">
+                    <Bell size={22} />
+                        <Badge className='badge' bg="warning" text="warning" pill>.</Badge>
+                    </div>
+                    <div className="profileBtn" onClick={profileClicked}>{localStorage.getItem('name')}</div>
+                </div>
                 }
                 { props.isProfile &&
                 <div className="logoutBtn" onClick={logoutClicked}>
@@ -85,7 +91,9 @@ function Menu(props: {isProfile: boolean}) {
                         <button className='menuBtn' onClick={homeClicked}>Домой</button>
                         <button className='menuBtn' onClick={horsesClicked}>Наши лошади</button>
                         <button className='menuBtn' onClick={trainersClicked}>Наши тренера</button>
-                        <button className='menuBtn' onClick={bookingClicked}>Онлайн запись</button>
+                        {localStorage.getItem('role') &&
+                            <button className='menuBtn' onClick={bookingClicked}>Онлайн запись</button>
+                        }
                     </div>
                 </Offcanvas.Body>
             </Offcanvas>

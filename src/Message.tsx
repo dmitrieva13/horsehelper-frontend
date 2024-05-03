@@ -6,7 +6,6 @@ import './style/App.css'
 
 
 function Message(props: {message: string}) {
-    const [isHidden, isHiddenSet] = useState(false)
     // const [fetched, fetchedSet] = useState(0)
 
     // useEffect(() => {
@@ -17,9 +16,8 @@ function Message(props: {message: string}) {
     // })
 
     return(
-        <div className="messageScreen" hidden={isHidden}>
+        <div className="messageScreen">
             <div className="messageContent">
-            <CloseButton onClick={() => isHiddenSet(true)}/>
             {props.message}
             </div>
         </div>
