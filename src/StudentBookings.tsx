@@ -40,9 +40,16 @@ function StudentBookings() {
               localStorage.clear()
               navigate('../signin')
             }
+            if (response.errorMessage) {
+                localStorage.clear()
+                navigate('../signin')
+            }
 
             let bookings = response.bookings
             if (bookings) {
+                bookings = bookings.sort((a: any, b: any) => {
+                    return new Date(a.date).getTime() - new Date(b.date).getTime()
+                })
                 trainingsSet(bookings)
                 trainingsCountSet(bookings.length)
             }
@@ -72,9 +79,16 @@ function StudentBookings() {
               localStorage.clear()
               navigate('../signin')
             }
+            if (response.errorMessage) {
+                localStorage.clear()
+                navigate('../signin')
+            }
 
             let bookings = response.bookings
             if (bookings) {
+                bookings = bookings.sort((a: any, b: any) => {
+                    return new Date(a.date).getTime() - new Date(b.date).getTime()
+                })
                 trainingsArchiveSet(bookings)
                 archiveTrainingsCountSet(bookings.length)
             }

@@ -44,6 +44,10 @@ function TrainerCalendar() {
                 localStorage.clear()
                 navigate('../signin')
             }
+            if (response.errorMessage) {
+                localStorage.clear()
+                navigate('../signin')
+            }
 
             console.log(response)
             if (response.bookings) {
@@ -72,6 +76,11 @@ function TrainerCalendar() {
           ).then(res=>res.json())
           .then(response=>{
             if (response.error) {
+                localStorage.clear()
+                navigate('../signin')
+            }
+
+            if (response.errorMessage) {
                 localStorage.clear()
                 navigate('../signin')
             }
@@ -108,6 +117,11 @@ function TrainerCalendar() {
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
             }
+            if (response.errorMessage) {
+                localStorage.clear()
+                navigate('../signin')
+            }
+
             isWorkingSet(false)
             getWorkingDays()
           })
@@ -133,6 +147,14 @@ function TrainerCalendar() {
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
             }
+            if (response.errorMessage) {
+                localStorage.clear()
+                navigate('../signin')
+            }
+
+            if (response.accessToken) {
+                localStorage.setItem('token', response.accessToken)
+            }
             isWorkingSet(true)
             getWorkingDays()
           })
@@ -152,6 +174,9 @@ function TrainerCalendar() {
             return new Date(el.date) >= start && new Date(el.date) <= end
         })
         console.log(found)
+        found = found.sort((a: any, b: any) => {
+            return new Date(a.date).getTime() - new Date(b.date).getTime()
+        })
         trainingsTodaySet(found)
     }
 
@@ -194,10 +219,6 @@ function TrainerCalendar() {
                     a.parentElement.style.backgroundColor = ''
                 }
             })
-
-            // if (!drawData) {
-            //     drawDataSet(1)
-            // }
         }, 0)
     }
 
@@ -238,21 +259,27 @@ function TrainerCalendar() {
                 <Calendar className="calendar" onChange={e => dayChanged(e)}
                 onActiveStartDateChange={e => change(e)} value={day}
                 minDate={today} maxDate={new Date((new Date()).setMonth((new Date()).getMonth()+2))} 
-                showNeighboringMonth={false}/>
+                showNeighboringMonth={false} prev2Label={null} next2Label={null}/>
 
                 {day != null && isWorking &&
                 <div className="raspDisplay">
                     <div className="textBlock">Я работаю в этот день</div>
                     <div className="trainingsBlock">
                         <div className="trainingsTextBlock">
-                            Количество запланированных тренировок: {trainingsToday.length}
+                            Запланировано тренировок: {trainingsToday.length}
                         </div>
-                        {/* <TrainingInfo booking={null} /> */}
+                        {trainingsToday.length > 0 &&
+                        trainingsToday.map((tr: any, i: number) => {
+                            return(
+                                <TrainingInfo booking={tr} key={i} />
+                            )
+                        })
+                        }
                     </div>
-                    <Button variant='danger' className='makeDayOffBtn'
+                    <button className='makeDayOffBtn'
                     onClick = {makeDayOffBtnClicked}>
                         Не работаю в этот день
-                    </Button>
+                    </button>
                 </div>
                 }
 

@@ -12,18 +12,20 @@ import Horses from './Horses'
 import HorseCalendar from './HorseCalendar'
 import Profile from './Profile'
 import TrainerCalendar from './TrainerCalendar'
-import HomePage from './HomePage'
+import NewsPage from './NewsPage'
 import ProfileEdit from './ProfileEdit'
 import Trainers from './Trainers'
 import TodayTrainings from './TodayTrainings'
 import StudentBookings from './StudentBookings'
+import HomePage from './HomePage'
 
 const App = () => {
   return(
     <Routes>
-        <Route path='/' element={<SignUp/>}/>
+        <Route path='/signup' element={<SignUp/>}/>
         <Route path='/signin' element={<SignIn/>}/>
-        <Route path='/home' element={<HomePage/>}/>
+        <Route path='/news' element={<NewsPage/>}/>
+        <Route path='/' element={<HomePage/>}/>
         <Route path='/book' element={<OnlineBooking/>}/>
         <Route path='/addtrainer' element={<AddTrainer/>}/>
         <Route path='/addhorse' element={<AddHorse/>}/>

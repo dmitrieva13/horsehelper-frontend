@@ -1,0 +1,19 @@
+.notification {
+    width: 100%;
+    padding: 5px;
+    padding-bottom: 10px;
+    cursor: pointer;
+}
+
+.notificationText {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.notificationCreated {
+    padding-left: 10px;
+    font-size: x-small;
+    font-weight: lighter;
+}

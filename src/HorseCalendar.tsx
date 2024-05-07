@@ -45,6 +45,10 @@ function HorseCalendar() {
               localStorage.clear()
               navigate('../signin')
             }
+            if (response.errorMessage) {
+                localStorage.clear()
+                navigate('../signin')
+            }
 
             let bookings = response.bookings
             if (bookings) {
@@ -78,6 +82,11 @@ function HorseCalendar() {
                 localStorage.clear()
                 navigate('../signin')
             }
+            if (response.errorMessage) {
+                localStorage.clear()
+                navigate('../signin')
+            }
+
             unavailableArrSet(response.unavailableDays)
             console.log(response.unavailableDays)
             if (response.accessToken) {
@@ -101,6 +110,9 @@ function HorseCalendar() {
             return new Date(el.date) >= start && new Date(el.date) <= end
         })
         console.log(found)
+        found = found.sort((a: any, b: any) => {
+            return new Date(a.date).getTime() - new Date(b.date).getTime()
+        })
         bookingsTodaySet(found)
     }
 

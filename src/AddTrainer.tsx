@@ -86,6 +86,11 @@ function AddTrainer() {
               localStorage.clear()
               navigate('../signin')
             }
+            if (response.errorMessage) {
+              localStorage.clear()
+              navigate('../signin')
+            }
+
             if (response.accessToken) {
               localStorage.setItem('token', response.accessToken)
             }

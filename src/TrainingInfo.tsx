@@ -24,9 +24,11 @@ let dateBeautify = () => {
                 <div className="studentInformationPreview">
                     Ученик: {props.booking.name}
                 </div>
+                {props.booking.trainerName &&
                 <div className="trainerInformationPreview">
                     Тренер: {props.booking.trainerName}
                 </div>
+                }
             </div>
 
             <Modal show={showFull} onHide={() => showFullSet(false)} centered>
@@ -39,10 +41,12 @@ let dateBeautify = () => {
                                     Ученик: {props.booking.name}
                                     <div className="studentPhone">{props.booking.phone}</div>
                                 </div>
+                                { props.booking.trainerName &&
                                 <div className="trainerInformation">
                                     Тренер: {props.booking.trainerName}
                                     <div className="trainerPhone">{props.booking.trainerPhone}</div>
                                 </div>
+                                }
                                 {props.booking.horseName &&
                                 <div className="horseInformation">
                                     Лошадь: {props.booking.horseName}

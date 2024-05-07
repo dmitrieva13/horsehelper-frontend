@@ -39,11 +39,10 @@
 
 .trainingsTextBlock {
   padding-top: 10px;
-  padding-bottom: 10px;
-  font-weight: lighter;
+  color: #757575;
 }
 
-.makeUnavaileableBtn {
+.makeUnavaileableBtn, .makeDayOffBtn {
   border-radius: 7px;
   background-color: rgb(244, 196, 48);
   border: 1px solid rgb(244, 196, 48);

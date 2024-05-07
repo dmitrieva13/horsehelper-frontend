@@ -41,7 +41,7 @@ function SignUp() {
             localStorage.setItem('id', decoded.id)
             localStorage.setItem('name', decoded.name)
             localStorage.setItem('role', decoded.role)
-            navigate('../home')
+            navigate('../')
           })
           .catch(er=>{
             console.log(er.message)
@@ -109,7 +109,7 @@ function SignUp() {
                             <p className="mb-0  text-center">
                                 Уже есть аккаунт?{' '}
                                 <a onClick={()=>{
-                                    navigate('/signin')
+                                    navigate('../signin')
                                 }} className="text-dark fw-bold" style={{cursor: "pointer"}}>
                                     Войти
                                 </a>

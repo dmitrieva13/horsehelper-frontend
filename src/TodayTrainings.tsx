@@ -19,27 +19,60 @@ function TodayTrainings() {
     const [workingDays, workingDaysSet] = useState<any[]>([])
 
     let getTrainingsToday = () => {
-        let list: any[] = [{
-            date: "17 Apr 2024 20:50:00 GMT+0300"
-        },
-    {
-        date: "17 Apr 2024 19:50:00 GMT+0300"
-    }]
-        return list
+        fetch("https://horsehelper-backend.onrender.com/today_bookings", {
+              method: "POST",
+              body: JSON.stringify({
+                    accessToken: localStorage.getItem('token')
+                }),
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+          }
+          ).then(res=>res.json())
+          .then(response=>{
+            if (response.error) {
+                localStorage.clear()
+                navigate('../signin')
+            }
+            if (response.errorMessage) {
+                localStorage.clear()
+                navigate('../signin')
+            }
+
+            console.log(response)
+            let bookings = response.bookings
+            let now = new Date()
+            let all_filtered = bookings.filter((training: any) => {
+                let check_date = new Date(new Date(training.date)).setMinutes(new Date(training.date).getMinutes() + 15)
+                
+                return new Date(check_date) > new Date(now)
+            })
+            all_filtered = all_filtered.sort((a: any, b: any) => {
+                return new Date(a.date).getTime() - new Date(b.date).getTime()
+            })
+            trainingsListSet(all_filtered)
+
+            if (response.accessToken) {
+                localStorage.setItem('token', response.accessToken)
+            }
+          })
+          .catch(er=>{
+            console.log(er.message)
+        })
     }
 
-    let getFilterTrainings = () => {
-        let all = getTrainingsToday()
-        let now = new Date()
-        let all_filtered = all.filter((training: any) => {
-            let check_date = new Date(new Date(training.date)).setMinutes(new Date(training.date).getMinutes() + 15)
+    // let getFilterTrainings = () => {
+    //     let now = new Date()
+    //     let all_filtered = all.filter((training: any) => {
+    //         let check_date = new Date(new Date(training.date)).setMinutes(new Date(training.date).getMinutes() + 15)
             
-            return new Date(check_date).getTime() > new Date(now).getTime()
-        })
-        console.log(all_filtered);
+    //         return new Date(check_date).getTime() > new Date(now).getTime()
+    //     })
+    //     console.log(all_filtered);
         
-        return all_filtered
-    }
+    //     return all_filtered
+    // }
 
     let checkDayOff = () => {
         let now = new Date()
@@ -90,13 +123,13 @@ function TodayTrainings() {
         if (!fetched) {
             // nowSet(new Date())
             getWorkingDays()
-            trainingsListSet(getFilterTrainings())
+            getTrainingsToday()
             setTimeout(() => {
                 fetchedSet(1)
             }, 0)
         }
         checkDayOff()
-    })
+    }, [])
 
     if (fetched) {
     return(
@@ -112,7 +145,12 @@ function TodayTrainings() {
                 }
                 {isWorking &&
                 <div className="displayList">
-                    <TrainingInfo booking={null} />
+                    {trainingsList.map((tr: any, i: number) => {
+                        return(
+                            <TrainingInfo booking={tr} key={i} />
+                        )
+                    })
+                    }
                 </div>
                 }
             </div>
