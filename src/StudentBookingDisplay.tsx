@@ -12,11 +12,9 @@ import Loading from './Loading';
 function StudentBookingDisplay(props: {training: any, isCurrent: boolean}) {
     const [showTrainer, showTrainerSet] = useState(false)
     const [showHorse, showHorseSet] = useState(false)
-    const [trainer, trainerSet] = useState(null)
-    const [horse, horseSet] = useState(null)
     const [horseSpec, horseSpecSet] = useState("")
-    const [trainerFetched, trainerFetchedSet] = useState(0)
-    const [horseFetched, horseFetchedSet] = useState(0)
+    const [fetched, fetchedSet] = useState(0)
+    const [isCancelled, isCancelledSet] = useState(false)
 
     let dateBeautify = (date: Date) => {
         Moment.locale('ru');
@@ -24,38 +22,55 @@ function StudentBookingDisplay(props: {training: any, isCurrent: boolean}) {
         return m
     }
 
-    let trainerClicked = (id: any) => {
-        if (!trainerFetched) {
-            trainerFetchedSet(1)
-        }
+    let trainerClicked = () => {
         showTrainerSet(true)
     }
 
-    let horseClicked = (id: any) => {
-        if (!horseFetched) {
-            horseFetchedSet(1)
-        }
+    let horseClicked = () => {
         showHorseSet(true)
     }
+
+    useEffect(() => {
+        if (!fetched) {
+            if (!props.isCurrent && props.training.isCancelled) {
+                isCancelledSet(true)
+            }
+        }
+    })
 
     return(
         <div className="StudentBookingDisplay">
 
             <div className="bookingsBlock">
+                {!props.isCurrent &&
+                <div className="bookingBadgeBlock">
+                    {isCancelled &&
+                    <div className="canceledBadge">Отменена</div>
+                    }
+                    {!isCancelled &&
+                    <div className="archivedBadge">Завершена</div>
+                    }
+                </div>
+                }
                 <div className="bookingInfo">
-                    <div className="bookingDate">{dateBeautify(new Date())}</div>
+                    <div className="bookingDate">{dateBeautify(new Date(props.training.date))}</div>
                     <div className="trainerHorseDisplayBlock">
                         <div className="trainerDisplayBlock" onClick={trainerClicked}>
-                            <Image className='bookingImg' src='https://img.freepik.com/free-photo/mountains-lake_1398-1150.jpg' fluid roundedCircle />
-                            <div className="trainerName">Тренер: Владимир</div>
+                            <Image className='bookingImg' src={props.training.trainerPhoto} fluid roundedCircle />
+                            <div className="trainerName">Тренер: {props.training.trainerName}</div>
                         </div>
                         <div className="horseDisplayBlock" onClick={horseClicked}>
-                            <Image className='bookingImg' src='https://img.freepik.com/free-photo/mountains-lake_1398-1150.jpg' fluid roundedCircle />
-                            <div className="trainerName">Лошадь: Horse</div>
+                            <Image className='bookingImg' src={props.training.horsePhoto} fluid roundedCircle />
+                            <div className="trainerName">Лошадь: {props.training.horseName}</div>
                         </div>
                     </div>
-                    <div className="bookingType">Тип тренировки: </div>
-                    <div className="bookingComments">Комментарий</div>
+                    <div className="bookingType">Тип тренировки: {props.training.type}</div>
+                    <div className="bookingComments">
+                        Комментарий:
+                        <div className="bookingCommentDisplay">
+                            {props.training.comment.length > 0 ? props.training.comment : "нет"}
+                        </div>
+                    </div>
                     { props.isCurrent &&
                     <div className="cancelBtnBlock">
                         <Button className='cancelBtn' variant='warning'>Отменить запись</Button>
@@ -66,18 +81,18 @@ function StudentBookingDisplay(props: {training: any, isCurrent: boolean}) {
 
             <Modal className='trainerModal' show={showTrainer} onHide={() => showTrainerSet(false)} centered>
                 <Modal.Header closeButton>
-                <Modal.Title>{"trainer.name"}</Modal.Title>
+                <Modal.Title>{props.training.trainerName}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                 <div className="InfoBlock">
                     <div className="ImageBlock">
-                        {/* <Image src={"trainer.trainerPhoto"} fluid /> */}
+                        <Image src={props.training.trainerPhoto} fluid />
                     </div>
                     <div className="specBlock">
-                        Специализация: {"trainer.trainerType"}
+                        Специализация: {props.training.trainerType}
                     </div>
                     <div className="descrBlock">
-                        {"trainer.trainerDescription"}
+                        {props.training.trainerDescription}
                     </div>
                 </div>
                 </Modal.Body>

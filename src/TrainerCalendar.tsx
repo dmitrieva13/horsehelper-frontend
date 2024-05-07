@@ -25,6 +25,38 @@ function TrainerCalendar() {
     const [workingDays, workingDaysSet] = useState<any[]>([])
 
     const [trainings, trainingsSet] = useState<any[]>([])
+    const [trainingsToday, trainingsTodaySet] = useState<any[]>([])
+
+    let getTrainings = () => {
+        fetch("https://horsehelper-backend.onrender.com/get_current_bookings_trainer", {
+              method: "POST",
+              body: JSON.stringify({
+                    accessToken: localStorage.getItem('token')
+                }),
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+          }
+          ).then(res=>res.json())
+          .then(response=>{
+            if (response.error) {
+                localStorage.clear()
+                navigate('../signin')
+            }
+
+            console.log(response)
+            if (response.bookings) {
+                trainingsSet(response.bookings)
+            }
+            if (response.accessToken) {
+                localStorage.setItem('token', response.accessToken)
+            }
+          })
+          .catch(er=>{
+            console.log(er.message)
+        })
+    }
 
     let getWorkingDays = () => {
         fetch("https://horsehelper-backend.onrender.com/get_working_days", {
@@ -50,11 +82,12 @@ function TrainerCalendar() {
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
             }
+            if (!drawData) {
+                drawDataSet(1)
+            }
           })
           .catch(er=>{
             console.log(er.message)
-            // localStorage.clear()
-            // navigate('./signin')
         })
     }
 
@@ -108,13 +141,33 @@ function TrainerCalendar() {
         })
     }
 
+    let getTrainingsByDate = (date: any) => {
+        let start = new Date(date)
+        start.setHours(0,0,0,0)
+
+        let end = new Date(date)
+        end.setHours(23,59,99,99)
+
+        let found = trainings.filter((el) => {
+            return new Date(el.date) >= start && new Date(el.date) <= end
+        })
+        console.log(found)
+        trainingsTodaySet(found)
+    }
+
     let dayChanged = (newDay: any) => {
-        console.log(newDay)
-        daySet(newDay)
-        let found = workingDays.find((el) => Date.parse(el.date) == Date.parse(newDay))
+        console.log("new day",newDay)
+        let date = new Date(newDay)
+        date.setHours(date.getHours() + 12)
+        daySet(date)
+        let found = workingDays.find((el) => {
+            console.log("date", el.date);
+            return Date.parse(el.date) == Date.parse(date.toString())
+        })
         console.log(found);
         if (found) {
             isWorkingSet(true)
+            getTrainingsByDate(date)
         } else {
             isWorkingSet(false)
         }
@@ -136,15 +189,15 @@ function TrainerCalendar() {
         setTimeout(() => {
             document.querySelectorAll("abbr").forEach(a => {
                 if (monthDates.includes(a.innerHTML)) {
-                    a.parentElement.style.backgroundColor = 'BurlyWood'
+                    a.parentElement.style.backgroundColor = '#b6c590'
                 } else {
                     a.parentElement.style.backgroundColor = ''
                 }
             })
 
-            if (!drawData) {
-                drawDataSet(1)
-            }
+            // if (!drawData) {
+            //     drawDataSet(1)
+            // }
         }, 0)
     }
 
@@ -160,6 +213,7 @@ function TrainerCalendar() {
         if (!fetched) {
             todaySet(new Date())
             getWorkingDays()
+            getTrainings()
             setTimeout(() => {
                 fetchedSet(1)
             }, 0)
@@ -191,10 +245,9 @@ function TrainerCalendar() {
                     <div className="textBlock">Я работаю в этот день</div>
                     <div className="trainingsBlock">
                         <div className="trainingsTextBlock">
-                            Количество запланированных тренировок: {trainings.length}
+                            Количество запланированных тренировок: {trainingsToday.length}
                         </div>
-                        <TrainingInfo date={new Date()} student={"Student"} studentPhone={"+79999999999"}
-trainer={"string"} trainerPhone={"string"} horse={"string"} type={"any"} comment={"string"} />
+                        {/* <TrainingInfo booking={null} /> */}
                     </div>
                     <Button variant='danger' className='makeDayOffBtn'
                     onClick = {makeDayOffBtnClicked}>

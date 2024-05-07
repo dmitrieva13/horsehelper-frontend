@@ -112,8 +112,7 @@ function TodayTrainings() {
                 }
                 {isWorking &&
                 <div className="displayList">
-                    <TrainingInfo date={new Date()} student={"Student"} studentPhone={"+79999999999"}
-trainer={"string"} trainerPhone={"string"} horse={"string"} type={"any"} comment={"string"} />
+                    <TrainingInfo booking={null} />
                 </div>
                 }
             </div>

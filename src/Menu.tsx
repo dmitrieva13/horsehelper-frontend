@@ -91,7 +91,7 @@ function Menu(props: {isProfile: boolean}) {
                         <button className='menuBtn' onClick={homeClicked}>Домой</button>
                         <button className='menuBtn' onClick={horsesClicked}>Наши лошади</button>
                         <button className='menuBtn' onClick={trainersClicked}>Наши тренера</button>
-                        {localStorage.getItem('role') &&
+                        {localStorage.getItem('role') == 'student' &&
                             <button className='menuBtn' onClick={bookingClicked}>Онлайн запись</button>
                         }
                     </div>

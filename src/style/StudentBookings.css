@@ -2,9 +2,10 @@
     width: 70%;
     min-width: 700px;
     margin: auto;
-    padding: 40px;
-    /* padding-left: 100px;
-    padding-right: 100px; */
+    padding-top: 40px;
+    padding-left: 40px;
+    padding-right: 40px;
+    position: relative;
 }
 
 .bookingInfo {
@@ -22,9 +23,7 @@
     padding-left: 20px;
     padding-right: 20px;
     font-size: larger;
-    /* border-bottom: 1px solid black; */
     background-color: #b6c590;
-    /* border: 1px solid rgb(107, 142, 35); */
     border-top-left-radius: 17px;
     border-top-right-radius: 17px;
 }
@@ -64,6 +63,22 @@
     padding-bottom: 20px;
     padding-left: 20px;
     padding-right: 20px;
+    display: flex;
+    flex-direction: row;
+    column-gap: 4px;
+    align-items: baseline;
+}
+
+.bookingCommentDisplay {
+    color: #454545;
+    font-style: italic;
+}
+
+.studentBookingsScreen {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .cancelBtnBlock {
@@ -74,6 +89,32 @@
 .cancelBtn {
     margin-bottom: 20px;
     justify-self: center;
+}
+
+.canceledBadge {
+    display: block;
+    position: absolute;
+    top: 55px;
+    right: 55px;
+    border: 1px solid #341005;
+    border-radius: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: white;
+    background-color: #341005;
+}
+
+.archivedBadge {
+    display: block;
+    position: absolute;
+    top: 55px;
+    right: 55px;
+    border: 1px solid #454545;
+    border-radius: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: white;
+    background-color: #454545;
 }
 
 .bookingsBtnsBlock {
@@ -104,6 +145,8 @@
 
 .currentTrainingsBlock, .archiveTrainingsBlock {
     width: 100%;
+    padding-bottom: 40px;
+    flex: 1 1 auto;
 }
 
 .showMoreBtn {

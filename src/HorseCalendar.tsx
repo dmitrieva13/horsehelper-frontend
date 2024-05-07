@@ -8,6 +8,7 @@ import './style/App.css'
 import './style/Calendar.css'
 // import 'react-calendar/dist/Calendar.css';
 import TrainingInfo from './TrainingInfo';
+import Loading from './Loading';
 
 type ValuePiece = Date | null;
 
@@ -23,8 +24,39 @@ function HorseCalendar() {
     const [today, todaySet] = useState<Date>(null)
     const [isAvailable, isAvailableSet] = useState(true)
     const [unavailableArr, unavailableArrSet] = useState<any[]>([])
+    const [bookings, bookingsSet] = useState<any[]>([])
+    const [bookingsToday, bookingsTodaySet] = useState<any[]>([])
 
     let getBookings = () => {
+        fetch("https://horsehelper-backend.onrender.com/get_bookings_by_horse", {
+              method: "POST",
+              body: JSON.stringify({
+                    id: horseId,
+                    accessToken: localStorage.getItem('token')
+                }),
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+          }).then(res=>res.json())
+          .then(response=>{
+            console.log(response)
+            if (response.error) {
+              localStorage.clear()
+              navigate('../signin')
+            }
+
+            let bookings = response.bookings
+            if (bookings) {
+                bookingsSet(bookings)
+            }
+            if (response.accessToken) {
+              localStorage.setItem('token', response.accessToken)
+            }
+          })
+          .catch(er=>{
+            console.log(er.message)
+        })
     }
 
     let getUnavailableDays = () => {
@@ -51,10 +83,25 @@ function HorseCalendar() {
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
             }
+            
           })
           .catch(er=>{
             console.log(er.message)
         })
+    }
+
+    let getBookingsByDate = (date: any) => {
+        let start = new Date(date)
+        start.setHours(0,0,0,0)
+
+        let end = new Date(date)
+        end.setHours(23,59,99,99)
+
+        let found = bookings.filter((el) => {
+            return new Date(el.date) >= start && new Date(el.date) <= end
+        })
+        console.log(found)
+        bookingsTodaySet(found)
     }
 
     let dayChanged = (newDay: any) => {
@@ -66,6 +113,7 @@ function HorseCalendar() {
             isAvailableSet(false)
         } else {
             isAvailableSet(true)
+            getBookingsByDate(newDay)
         }
     }
 
@@ -130,10 +178,15 @@ function HorseCalendar() {
             isAvailableSet(true)
 
             getUnavailableDays()
-            fetchedSet(1)
-        }
-    })
+            getBookings()
 
+            setTimeout(() => {
+                fetchedSet(1)
+            }, 300)
+        }
+    }, [])
+
+    if (fetched) {
     return(
         <div className="CalendarScreen">
             <div className="backBtnCalendar">
@@ -146,14 +199,22 @@ function HorseCalendar() {
                 <Calendar className="calendar" onChange={e => dayChanged(e)} value={day} minDate={today}/>
                 {day != null && isAvailable &&
                 <div className="raspDisplay">
+                    <div className="textBlock">Лошадь доступна для занятий</div>
                     <div className="trainingsBlock">
-                        <TrainingInfo date={new Date()} student={"Student"} studentPhone={"+79999999999"}
-trainer={"string"} trainerPhone={"string"} horse={"string"} type={"any"} comment={"string"} />
+                    {/* <div className="trainingsTextBlock">
+                        Тренировок в этот день: {bookingsToday.length}
+                    </div> */}
+                        {bookingsToday.map((booking: any, i: number) => {
+                            return(
+                                <TrainingInfo booking={booking} key={i} />
+                            )
+                        })
+                        }
                     </div>
-                    <Button variant='danger' className='makeUnavaileableBtn'
+                    <button className='makeUnavaileableBtn'
                     onClick={makeUnavaileableBtnClicked}>
                         Сделать недоступной в этот день
-                    </Button>
+                    </button>
                 </div>}
                 {!isAvailable && 
                 <div className="raspDisplay">
@@ -170,6 +231,11 @@ trainer={"string"} trainerPhone={"string"} horse={"string"} type={"any"} comment
 }
         </div>
     )
+    } else {
+    return(
+        <Loading />
+    )
+}
 }
 
 export default HorseCalendar

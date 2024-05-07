@@ -258,7 +258,7 @@ function OnlineBooking() {
             setTimeout(() => {
                 successSet(false)
                 navigate("../home")
-            }, 200)
+            }, 1000)
         })
         .catch(er=>{
             console.log(er.message)
