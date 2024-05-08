@@ -3,14 +3,18 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Col, Button, Row, Container, Card, Form, InputGroup } from 'react-bootstrap';
 import { jwtDecode } from "jwt-decode";
+import { Eye, EyeSlash } from 'react-bootstrap-icons';
 
 import './style/App.css'
+
+import Menu from './Menu';
 
 function SignUp() {
     const [name, nameSet] = useState("")
     const [phone, phoneSet] = useState("")
     const [password, passwordSet] = useState("")
     const [error, errorSet] = useState("")
+    const [type, typeSet] = useState("password")
 
     const navigate = useNavigate()
 
@@ -48,8 +52,17 @@ function SignUp() {
         })
     }
 
+    let showPasswordClicked = () => {
+        typeSet("text")
+    }
+
+    let hidePasswordClicked = () => {
+        typeSet("password")
+    }
+
     return(
         <div>
+            <Menu isProfile={false} />
             <Container>
                 <Row className="vh-100 d-flex justify-content-center align-items-center">
                 <Col md={8} lg={6} xs={12}>
@@ -66,7 +79,7 @@ function SignUp() {
                                 // console.log(name, password, email)
                             }}>
                             <Form.Group className="mb-3 w-100" controlId="Name">
-                                <Form.Label className="text-center">Ваше имя:</Form.Label>
+                                <Form.Label className="text-center">Ваше имя</Form.Label>
                                 <Form.Control type="text" placeholder="Введите имя"
                                     onChange={a => nameSet(a.target.value)}
                                     required maxLength={50}
@@ -74,7 +87,7 @@ function SignUp() {
                             </Form.Group>
 
                             <Form.Label className="text-center">
-                                Номер телефона:
+                                Номер телефона
                             </Form.Label>
                             <InputGroup className="mb-3">
                                 <InputGroup.Text id="basic-addon1">+7</InputGroup.Text>
@@ -89,11 +102,19 @@ function SignUp() {
                                 className="mb-3"
                                 controlId="formBasicPassword"
                             >
-                                <Form.Label>Пароль:</Form.Label>
-                                <Form.Control type="password" placeholder="Введите пароль"
-                                    onChange={a => passwordSet(a.target.value)} required
-                                    minLength={4} maxLength={30}
-                                />
+                                <Form.Label>Пароль</Form.Label>
+                                <div className='passwordInput'>
+                                    <Form.Control type={type} placeholder="Введите пароль"
+                                        onChange={a => passwordSet(a.target.value)} required
+                                        minLength={4} maxLength={30}
+                                    />
+                                    {type == "password" &&
+                                    <Eye className='passIcon' size={20} onClick={showPasswordClicked} />
+                                    }
+                                    {type == "text" &&
+                                    <EyeSlash className='passIcon' size={20} onClick={hidePasswordClicked} />
+                                    }
+                                </div>
                             </Form.Group>
                             <Form.Group
                                 className="mb-3"

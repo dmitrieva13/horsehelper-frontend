@@ -3,9 +3,11 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Col, Button, Row, Container, Card, Form, InputGroup } from 'react-bootstrap';
 import { jwtDecode } from "jwt-decode";
+import { Eye, EyeSlash } from 'react-bootstrap-icons';
 
 import './style/App.css'
 import Message from './Message';
+import Menu from './Menu';
 
 function SignIn() {
     const [phone, phoneSet] = useState("")
@@ -14,6 +16,7 @@ function SignIn() {
     const [isPhoneValid, isPhoneValidSet] = useState(true)
     const [isPassValid, isPassValidSet] = useState(true)
     const [showMessage, showMessageSet] = useState(false)
+    const [type, typeSet] = useState("password")
 
     const navigate = useNavigate()
 
@@ -54,8 +57,17 @@ function SignIn() {
         })
     }
 
+    let showPasswordClicked = () => {
+        typeSet("text")
+    }
+
+    let hidePasswordClicked = () => {
+        typeSet("password")
+    }
+
     return(
         <div>
+            <Menu isProfile={false} />
             <Container>
                 <Row className="vh-100 d-flex justify-content-center align-items-center">
                 <Col md={8} lg={6} xs={12}>
@@ -92,11 +104,19 @@ function SignIn() {
                                 controlId="formBasicPassword"
                             >
                                 <Form.Label>Пароль</Form.Label>
-                                <Form.Control type="password" placeholder="Введите пароль" required
-                                onChange={a => passwordSet(a.target.value)} 
-                                isInvalid={!isPassValid}
-                                onClick={() => isPassValidSet(true)}
-                                />
+                                <div className='passwordInput'>
+                                    <Form.Control type={type} placeholder="Введите пароль" required
+                                    onChange={a => passwordSet(a.target.value)} 
+                                    isInvalid={!isPassValid}
+                                    onClick={() => isPassValidSet(true)}
+                                    />
+                                    {type == "password" &&
+                                    <Eye className='passIcon' size={20} onClick={showPasswordClicked} />
+                                    }
+                                    {type == "text" &&
+                                    <EyeSlash className='passIcon' size={20} onClick={hidePasswordClicked} />
+                                    }
+                                </div>
                             </Form.Group>
                             <Form.Group
                                 className="mb-3"

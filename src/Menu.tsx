@@ -12,6 +12,7 @@ function Menu(props: {isProfile: boolean}) {
     const [showMenu, showMenuSet] = useState(false)
     const [id, idSet] = useState("")
     const [fetched, fetchedSet] = useState(0)
+    const [isLogged, isLoggedSet] = useState(true)
     const [trainerNotifications, trainerNotificationsSet] = useState<any[]>([])
     const [studentNotifications, studentNotificationsSet] = useState<any[]>([])
     const [hasNotifications, hasNotificationsSet] = useState(false)
@@ -71,6 +72,11 @@ function Menu(props: {isProfile: boolean}) {
     }
 
     let logoutClicked = () => {
+        localStorage.clear()
+        navigate('../signin')
+    }
+
+    let loginClicked = () => {
         localStorage.clear()
         navigate('../signin')
     }
@@ -152,16 +158,15 @@ function Menu(props: {isProfile: boolean}) {
     useEffect(() => {
         if (!fetched) {
             if (!localStorage['name'] || !localStorage['id']) {
-                
-                localStorage.clear()
-                navigate('../signin')
-            }
-            idSet(localStorage['id'])
-            if (localStorage.getItem('role') == "trainer") {
-                getTrainerNotifications()
-            }
-            if (localStorage.getItem('role') == "student") {
-                getStudentNotifications()
+                isLoggedSet(false)
+            } else {
+                idSet(localStorage.getItem('id'))
+                if (localStorage.getItem('role') == "trainer") {
+                    getTrainerNotifications()
+                }
+                if (localStorage.getItem('role') == "student") {
+                    getStudentNotifications()
+                }
             }
             fetchedSet(1)
         }
@@ -171,15 +176,17 @@ function Menu(props: {isProfile: boolean}) {
         <div className="menu">
             <div className="topHolder">
                 <List className='menuIcon' onClick={handleShow} size={28}/>
-                { !props.isProfile &&
+                {(isLogged && !props.isProfile) &&
                 <div className="profileBlock">
 
+                    {(localStorage.getItem('role') == 'student' || localStorage.getItem('role') == 'trainer') &&
                     <OverlayTrigger
                     trigger={"click"}
                     placement="left"
                     delay={{ show: 200, hide: 400 }}
                     overlay={renderTooltip}
                     >
+                        
                         <div className="notificationsBlock" style={{cursor: hasNotifications ? "pointer" : "default"}}>
                         <Bell size={22} />
                             {hasNotifications &&
@@ -187,14 +194,20 @@ function Menu(props: {isProfile: boolean}) {
                             }
                         </div>
                     </OverlayTrigger>
+                    }
                     
                     <div className="profileBtn" onClick={profileClicked}>{localStorage.getItem('name')}</div>
                 </div>
                 }
-                { props.isProfile &&
+                {(isLogged && props.isProfile) &&
                 <div className="logoutBtn" onClick={logoutClicked}>
                     Выйти
                     <BoxArrowRight size={20} color='#92000a' />
+                </div>
+                }
+                {!isLogged &&
+                <div className="loginBlock">
+                    <div className="profileBtn" onClick={loginClicked}>Войти</div>
                 </div>
                 }
             </div>

@@ -26,6 +26,7 @@ function HorseCalendar() {
     const [unavailableArr, unavailableArrSet] = useState<any[]>([])
     const [bookings, bookingsSet] = useState<any[]>([])
     const [bookingsToday, bookingsTodaySet] = useState<any[]>([])
+    const [drawData, drawDataSet] = useState(0)
 
     let getBookings = () => {
         fetch("https://horsehelper-backend.onrender.com/get_bookings_by_horse", {
@@ -92,7 +93,9 @@ function HorseCalendar() {
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
             }
-            
+            if (!drawData) {
+                drawDataSet(1)
+            }
           })
           .catch(er=>{
             console.log(er.message)
@@ -118,14 +121,48 @@ function HorseCalendar() {
 
     let dayChanged = (newDay: any) => {
         console.log(newDay);
-        daySet(newDay)
-        let found = unavailableArr.find((el) => Date.parse(el.date) == Date.parse(newDay))
+        let date = new Date(newDay)
+        date.setHours(date.getHours() + 12)
+        daySet(date)
+        let found = unavailableArr.find((el) => Date.parse(el.date) == Date.parse(date.toString()))
         console.log(found);
         if (found) {
             isAvailableSet(false)
         } else {
             isAvailableSet(true)
             getBookingsByDate(newDay)
+        }
+    }
+
+    let paint = (date:any) => {
+        let month = date.getMonth()
+        console.log("month", month);
+
+        let monthDates:String[] = []
+        unavailableArr.forEach(d => {
+            let d_date = new Date(d.date)
+            if (d_date.getMonth() == month) {
+                monthDates.push(d_date.getDate().toString())
+            }
+        })
+
+        console.log(monthDates)
+        setTimeout(() => {
+            document.querySelectorAll("abbr").forEach(a => {
+                if (monthDates.includes(a.innerHTML)) {
+                    a.parentElement.style.backgroundColor = '#b5817f'
+                } else {
+                    a.parentElement.style.backgroundColor = ''
+                }
+            })
+        }, 0)
+    }
+
+    let change = (e: any) => {
+        console.log(e)
+        if (e.view == "month") {
+            let date = new Date(e.activeStartDate)
+            paint(date)
         }
     }
 
@@ -194,11 +231,13 @@ function HorseCalendar() {
 
             setTimeout(() => {
                 fetchedSet(1)
-            }, 300)
+            }, 0)
         }
-    }, [])
+        let date = day == null ? new Date() : day
+        paint(date)
+    })
 
-    if (fetched) {
+    if (fetched && drawData) {
     return(
         <div className="CalendarScreen">
             <div className="backBtnCalendar">
@@ -208,14 +247,17 @@ function HorseCalendar() {
             
             {fetched &&
             <div className="calendarBlock">
-                <Calendar className="calendar" onChange={e => dayChanged(e)} value={day} minDate={today}/>
+                <Calendar className="calendar" onChange={e => dayChanged(e)} 
+                onActiveStartDateChange={e => change(e)} value={day} 
+                minDate={today} maxDate={new Date((new Date()).setMonth((new Date()).getMonth()+2))} 
+                showNeighboringMonth={false} prev2Label={null} next2Label={null}/>
                 {day != null && isAvailable &&
                 <div className="raspDisplay">
                     <div className="textBlock">Лошадь доступна для занятий</div>
                     <div className="trainingsBlock">
-                    {/* <div className="trainingsTextBlock">
+                    <div className="trainingsTextBlock">
                         Тренировок в этот день: {bookingsToday.length}
-                    </div> */}
+                    </div>
                         {bookingsToday.map((booking: any, i: number) => {
                             return(
                                 <TrainingInfo booking={booking} key={i} />
