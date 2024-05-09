@@ -22,12 +22,14 @@ function StudentBookings() {
     const [show, showSet] = useState(5)
     const [trainingsCount, trainingsCountSet] = useState(0)
     const [archiveTrainingsCount, archiveTrainingsCountSet] = useState(0)
+    const [isCancel, isCancelSet] = useState(false)
 
-    let getCurrentTrainings = () => {
+    let getCurrentTrainings = (isRefresh: boolean) => {
         fetch("https://horsehelper-backend.onrender.com/get_current_bookings_student", {
               method: "POST",
               body: JSON.stringify({
-                    accessToken: localStorage.getItem('token')
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
                 }),
               headers: {
                 'Accept': 'application/json',
@@ -37,12 +39,14 @@ function StudentBookings() {
           .then(response=>{
             console.log(response)
             if (response.error) {
-              localStorage.clear()
-              navigate('../signin')
-            }
-            if (response.errorMessage) {
                 localStorage.clear()
                 navigate('../signin')
+            }
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    getCurrentTrainings(true)
+                }
+                return
             }
 
             let bookings = response.bookings
@@ -56,17 +60,21 @@ function StudentBookings() {
             if (response.accessToken) {
               localStorage.setItem('token', response.accessToken)
             }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
+            }
           })
           .catch(er=>{
             console.log(er.message)
         })
     }
 
-    let getArchiveTrainings = () => {
+    let getArchiveTrainings = (isRefresh: boolean) => {
         fetch("https://horsehelper-backend.onrender.com/get_archived_bookings_student", {
               method: "POST",
               body: JSON.stringify({
-                    accessToken: localStorage.getItem('token')
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
                 }),
               headers: {
                 'Accept': 'application/json',
@@ -76,12 +84,14 @@ function StudentBookings() {
           .then(response=>{
             console.log("archive", response)
             if (response.error) {
-              localStorage.clear()
-              navigate('../signin')
-            }
-            if (response.errorMessage) {
                 localStorage.clear()
                 navigate('../signin')
+            }
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    getArchiveTrainings(true)
+                }
+                return
             }
 
             let bookings = response.bookings
@@ -95,6 +105,9 @@ function StudentBookings() {
             if (response.accessToken) {
               localStorage.setItem('token', response.accessToken)
             }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
+            }
           })
           .catch(er=>{
             console.log(er.message)
@@ -105,7 +118,7 @@ function StudentBookings() {
         showSet(5)
         screenSet(screenName)
         if (screenName == "archive" && !fetchedArchive) {
-            getArchiveTrainings()
+            getArchiveTrainings(false)
             setTimeout(() => {
                 fetchedArchiveSet(1)
             }, 300)
@@ -114,14 +127,23 @@ function StudentBookings() {
 
     useEffect(() => {
         if (!fetched) {
-            getCurrentTrainings()
+            getCurrentTrainings(false)
+            setTimeout(() => {
+                fetchedSet(1)
+            }, 200)
+        }
+        if (isCancel) {
+            console.log("canceling");
+            
+            getCurrentTrainings(false)
+            getArchiveTrainings(false)
             setTimeout(() => {
                 fetchedSet(1)
             }, 200)
         }
     })
 
-    if (fetched) {
+    if (fetched || isCancel) {
         return(
             <div className="studentBookingsScreen">
                 <Menu isProfile={false} />
@@ -144,7 +166,8 @@ function StudentBookings() {
                     trainings.map((tr: any, i: number) => {
                         let key = "current." + i.toString()
                         return(
-                        <StudentBookingDisplay training={tr} isCurrent={true} key={key} />
+                        <StudentBookingDisplay training={tr} isCurrent={true}
+                        canceledFunc={isCancelSet} key={key} />
                         )
                     })
                     }
@@ -169,7 +192,8 @@ function StudentBookings() {
                         trainingsArchive.map((tr: any, i: number) => {
                             let key = "archived." + i.toString()
                             return(
-                            <StudentBookingDisplay training={tr} isCurrent={false} key={key} />
+                            <StudentBookingDisplay training={tr} isCurrent={false}
+                            canceledFunc={isCancelSet} key={key} />
                             )
                         })
                         }

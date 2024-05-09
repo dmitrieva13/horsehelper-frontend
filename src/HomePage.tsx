@@ -34,9 +34,7 @@ function HomePage() {
     return(
         <div className="homePage">
             <Menu isProfile={false} />
-
             <div className="mainInfoDisplay">
-                {/* <Image src={mainImage} className='mainImg' fluid /> */}
                 <div className="mainInfoText">
                     <p>
                     Наша школа была открыта в 2020 году. Школа расположена в 

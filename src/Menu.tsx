@@ -16,11 +16,26 @@ function Menu(props: {isProfile: boolean}) {
     const [trainerNotifications, trainerNotificationsSet] = useState<any[]>([])
     const [studentNotifications, studentNotificationsSet] = useState<any[]>([])
     const [hasNotifications, hasNotificationsSet] = useState(false)
+    const [clickCount, clickCountSet] = useState(0)
 
     const navigate = useNavigate()
 
     const handleClose = () => showMenuSet(false)
     const handleShow = () => showMenuSet(true)
+
+    let trainerNotificationsClicked = () => {
+        console.log("clicked");
+        if (!hasNotifications) {
+            return
+        }
+        let clicks = clickCount + 1
+        clickCountSet(clicks)
+        readTrainerNotifications(false)
+        if (clicks >= 2) {
+            trainerNotificationsSet([])
+            hasNotificationsSet(false)
+        }
+    }
 
     const renderTooltip = (props: any) => (
         <Tooltip id="button-tooltip" {...props} hidden={!hasNotifications}>
@@ -81,11 +96,12 @@ function Menu(props: {isProfile: boolean}) {
         navigate('../signin')
     }
 
-    let getTrainerNotifications = () => {
+    let getTrainerNotifications = (isRefresh: boolean) => {
         fetch("https://horsehelper-backend.onrender.com/trainer_notifications", {
               method: "POST",
               body: JSON.stringify({
-                    accessToken: localStorage.getItem('token')
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
                 }),
               headers: {
                 'Accept': 'application/json',
@@ -98,9 +114,11 @@ function Menu(props: {isProfile: boolean}) {
               localStorage.clear()
               navigate('../signin')
             }
-            if (response.errorMessage) {
-                localStorage.clear()
-                navigate('../signin')
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    getTrainerNotifications(true)
+                }
+                return
             }
 
             if (response.notifications) {
@@ -112,17 +130,21 @@ function Menu(props: {isProfile: boolean}) {
             if (response.accessToken) {
               localStorage.setItem('token', response.accessToken)
             }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
+            }
           })
           .catch(er=>{
             console.log(er.message)
         })
     }
 
-    let getStudentNotifications = () => {
-        fetch("https://horsehelper-backend.onrender.com/student_notifications", {
+    let readTrainerNotifications = (isRefresh: boolean) => {
+        fetch("https://horsehelper-backend.onrender.com/read_trainer_notifications", {
               method: "POST",
               body: JSON.stringify({
-                    accessToken: localStorage.getItem('token')
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
                 }),
               headers: {
                 'Accept': 'application/json',
@@ -135,9 +157,54 @@ function Menu(props: {isProfile: boolean}) {
               localStorage.clear()
               navigate('../signin')
             }
-            if (response.errorMessage) {
-                localStorage.clear()
-                navigate('../signin')
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    readTrainerNotifications(true)
+                }
+                return
+            }
+
+            if (response.notifications) {
+                trainerNotificationsSet(response.notifications)
+                if (response.notifications.length > 0) {
+                    hasNotificationsSet(true)
+                }
+            }
+            if (response.accessToken) {
+              localStorage.setItem('token', response.accessToken)
+            }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
+            }
+          })
+          .catch(er=>{
+            console.log(er.message)
+        })
+    }
+
+    let getStudentNotifications = (isRefresh: boolean) => {
+        fetch("https://horsehelper-backend.onrender.com/student_notifications", {
+              method: "POST",
+              body: JSON.stringify({
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
+                }),
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+          }).then(res=>res.json())
+          .then(response=>{
+            console.log(response)
+            if (response.error) {
+              localStorage.clear()
+              navigate('../signin')
+            }
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    getStudentNotifications(true)
+                }
+                return
             }
 
             if (response.notifications) {
@@ -148,6 +215,9 @@ function Menu(props: {isProfile: boolean}) {
             }
             if (response.accessToken) {
               localStorage.setItem('token', response.accessToken)
+            }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
             }
           })
           .catch(er=>{
@@ -162,10 +232,10 @@ function Menu(props: {isProfile: boolean}) {
             } else {
                 idSet(localStorage.getItem('id'))
                 if (localStorage.getItem('role') == "trainer") {
-                    getTrainerNotifications()
+                    getTrainerNotifications(false)
                 }
                 if (localStorage.getItem('role') == "student") {
-                    getStudentNotifications()
+                    getStudentNotifications(false)
                 }
             }
             fetchedSet(1)
@@ -187,7 +257,8 @@ function Menu(props: {isProfile: boolean}) {
                     overlay={renderTooltip}
                     >
                         
-                        <div className="notificationsBlock" style={{cursor: hasNotifications ? "pointer" : "default"}}>
+                        <div className="notificationsBlock" style={{cursor: hasNotifications ? "pointer" : "default"}}
+                        onClick={trainerNotificationsClicked}>
                         <Bell size={22} />
                             {hasNotifications &&
                             <Badge className='badge' bg="warning" text="warning" pill>.</Badge>

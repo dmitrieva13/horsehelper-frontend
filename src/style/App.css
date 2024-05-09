@@ -75,7 +75,7 @@ button:disabled {
     width: 100vw;
     height: 100vh;
     display: block;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -109,6 +109,10 @@ button:disabled {
 
 .passwordInput {
     position: relative;
+}
+
+.passInput {
+    padding-right: 32px;
 }
 
 .passIcon {

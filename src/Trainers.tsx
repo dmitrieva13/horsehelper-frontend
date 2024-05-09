@@ -50,21 +50,18 @@ function Trainers() {
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
             }
-            fetchedSet(1)
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
+            }
           })
           .catch(er=>{
             console.log(er.message)
         })
-//         trainersSet([{
-//             name: "Владимир",
-//   trainerPhoto: "https://www.soyuz.ru/public/uploads/files/2/7442148/2020071012030153ea07b13d.jpg",
-//   trainerDescription: "КМС по выездке",
-//   trainerType: "Выездка",
-//   id: '2743597'
-//         }])
-        fetchedSet(1)
+        setTimeout(() => {
+            fetchedSet(1)
+        }, 100)
         }
-    })
+    }, [])
 
     if (fetched) {
     return(

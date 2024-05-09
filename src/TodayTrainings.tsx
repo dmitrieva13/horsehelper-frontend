@@ -13,16 +13,16 @@ function TodayTrainings() {
     const navigate = useNavigate()
 
     const [fetched, fetchedSet] = useState(0)
-    // const [now, nowSet] = useState<Date>(null)
     const [isWorking, isWorkingSet] = useState(true)
     const [trainingsList, trainingsListSet] = useState<any[]>([])
     const [workingDays, workingDaysSet] = useState<any[]>([])
 
-    let getTrainingsToday = () => {
+    let getTrainingsToday = (isRefresh: boolean) => {
         fetch("https://horsehelper-backend.onrender.com/today_bookings", {
               method: "POST",
               body: JSON.stringify({
-                    accessToken: localStorage.getItem('token')
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
                 }),
               headers: {
                 'Accept': 'application/json',
@@ -35,9 +35,11 @@ function TodayTrainings() {
                 localStorage.clear()
                 navigate('../signin')
             }
-            if (response.errorMessage) {
-                localStorage.clear()
-                navigate('../signin')
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    getTrainingsToday(true)
+                }
+                return
             }
 
             console.log(response)
@@ -56,23 +58,14 @@ function TodayTrainings() {
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
             }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
+            }
           })
           .catch(er=>{
             console.log(er.message)
         })
     }
-
-    // let getFilterTrainings = () => {
-    //     let now = new Date()
-    //     let all_filtered = all.filter((training: any) => {
-    //         let check_date = new Date(new Date(training.date)).setMinutes(new Date(training.date).getMinutes() + 15)
-            
-    //         return new Date(check_date).getTime() > new Date(now).getTime()
-    //     })
-    //     console.log(all_filtered);
-        
-    //     return all_filtered
-    // }
 
     let checkDayOff = () => {
         let now = new Date()
@@ -85,11 +78,12 @@ function TodayTrainings() {
         }
     }
 
-    let getWorkingDays = () => {
+    let getWorkingDays = (isRefresh: boolean) => {
         fetch("https://horsehelper-backend.onrender.com/get_working_days", {
               method: "POST",
               body: JSON.stringify({
-                    accessToken: localStorage.getItem('token')
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
                 }),
               headers: {
                 'Accept': 'application/json',
@@ -102,12 +96,23 @@ function TodayTrainings() {
                 localStorage.clear()
                 navigate('../signin')
             }
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    getWorkingDays(true)
+                }
+                return
+            }
 
             console.log(response)
             console.log(response.workingDays)
-            workingDaysSet((response.workingDays))
+            if (response.workingDays) {
+                workingDaysSet(response.workingDays)
+            }
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
+            }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
             }
           })
           .catch(er=>{
@@ -121,9 +126,8 @@ function TodayTrainings() {
 
     useEffect(() => {
         if (!fetched) {
-            // nowSet(new Date())
-            getWorkingDays()
-            getTrainingsToday()
+            getWorkingDays(false)
+            getTrainingsToday(false)
             setTimeout(() => {
                 fetchedSet(1)
             }, 0)

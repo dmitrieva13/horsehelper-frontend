@@ -56,6 +56,29 @@ function Profile() {
         navigate('../user/' + stId)
     }
 
+    let getStudentsList = () => {
+        fetch("https://horsehelper-backend.onrender.com/get_students_list", {
+              method: "POST",
+              body: JSON.stringify({
+                    trainerId: userId
+                }),
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+          }
+          ).then(res=>res.json())
+          .then(response=>{
+            console.log(response)
+            if (response.studentsList) {
+                studentsListSet(response.studentsList)
+            }
+          })
+          .catch(er=>{
+            console.log(er.message)
+        })
+    }
+
     let getProfileData = () => {
         fetch("https://horsehelper-backend.onrender.com/get_profile", {
               method: "POST",
@@ -70,13 +93,65 @@ function Profile() {
           ).then(res=>res.json())
           .then(response=>{
             console.log(response)
-            // unavailableArrSet(response.unavailableDays)
-            nameSet(response.name)
-            descriptionSet(response.userDescription)
-            photoSet(response.userPic)
-            roleSet(response.role)
+            if (response.name) {
+                nameSet(response.name)
+            }
+            if (response.userDescription) {
+                descriptionSet(response.userDescription)
+            }
+            if (response.userPic) {
+                photoSet(response.userPic)
+            }
+            if (response.role) {
+                roleSet(response.role)
+                if (response.role == 'trainer') {
+                    getStudentsList()
+                }
+            }
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
+            }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
+            }
+          })
+          .catch(er=>{
+            console.log(er.message)
+        })
+    }
+
+    let addStudentList = (isRefresh: boolean) => {
+        fetch("https://horsehelper-backend.onrender.com/add_student_list", {
+              method: "POST",
+              body: JSON.stringify({
+                    trainerId: userId,
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
+                }),
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+          }).then(res=>res.json())
+          .then(response=>{
+            console.log(response)
+            if (response.error) {
+                localStorage.clear()
+                navigate('../signin')
+            }
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    addStudentList(true)
+                }
+                return
+            }
+            if (response.studentsList) {
+            }
+            if (response.accessToken) {
+              localStorage.setItem('token', response.accessToken)
+            }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
             }
           })
           .catch(er=>{
@@ -87,13 +162,14 @@ function Profile() {
     useEffect(() => {
         if (!fetched) {
             getProfileData()
-            studentsListSet(stList)
-            fetchedSet(1)
+            setTimeout(() => {
+                fetchedSet(1)
+            }, 200)
             // photoSet("https://www.soyuz.ru/public/uploads/files/2/7442148/2020071012030153ea07b13d.jpg")
         }
-    })
+    }, [])
 
-    if (fetched && name != "") {
+    if (fetched) {
     return(
         <div className="profileScreen">
             <Menu isProfile={userId == localStorage.getItem('id')} />

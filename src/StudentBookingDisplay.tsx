@@ -9,12 +9,15 @@ import './style/App.css'
 import './style/StudentBookings.css'
 import Loading from './Loading';
 
-function StudentBookingDisplay(props: {training: any, isCurrent: boolean}) {
+function StudentBookingDisplay(props: {training: any, isCurrent: boolean,
+    canceledFunc: any}) {
     const [showTrainer, showTrainerSet] = useState(false)
     const [showHorse, showHorseSet] = useState(false)
     const [horseSpec, horseSpecSet] = useState("")
     const [fetched, fetchedSet] = useState(0)
     const [isCancelled, isCancelledSet] = useState(false)
+
+    const navigate = useNavigate()
 
     let dateBeautify = (date: Date) => {
         Moment.locale('ru');
@@ -28,6 +31,48 @@ function StudentBookingDisplay(props: {training: any, isCurrent: boolean}) {
 
     let horseClicked = () => {
         showHorseSet(true)
+    }
+
+    let cancelBooking = (isRefresh: boolean) => {
+        fetch("https://horsehelper-backend.onrender.com/cancel_booking", {
+              method: "POST",
+              body: JSON.stringify({
+                    trainerId: props.training.trainerId,
+                    horseId: props.training.horseId,
+                    date: props.training.date,
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
+                }),
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+          }).then(res=>res.json())
+          .then(response=>{
+            console.log("cancel ", response)
+            if (response.error) {
+                localStorage.clear()
+                navigate('../signin')
+            }
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    cancelBooking(true)
+                }
+                return
+            }
+
+            props.canceledFunc(true)
+            
+            if (response.accessToken) {
+              localStorage.setItem('token', response.accessToken)
+            }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
+            }
+          })
+          .catch(er=>{
+            console.log(er.message)
+        })
     }
 
     useEffect(() => {

@@ -45,14 +45,15 @@ function ProfileEdit() {
         })
     }
 
-    let saveClicked = () => {
+    let saveClicked = (isRefresh: boolean) => {
         fetch("https://horsehelper-backend.onrender.com/change_profile", {
               method: "POST",
               body: JSON.stringify({
                     id: userId,
                     userPic: photo,
                     userDescription: description,
-                    accessToken: localStorage.getItem('token')
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
                 }),
               headers: {
                 'Accept': 'application/json',
@@ -62,10 +63,24 @@ function ProfileEdit() {
           ).then(res=>res.json())
           .then(response=>{
             console.log(response)
-            // unavailableArrSet(response.unavailableDays)
+            if (response.error) {
+                localStorage.clear()
+                navigate('../signin')
+            }
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    saveClicked(true)
+                }
+                return
+            }
+
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
             }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
+            }
+            
             navigate('../user/' + userId)
           })
           .catch(er=>{
@@ -79,7 +94,7 @@ function ProfileEdit() {
             fetchedSet(1)
             // photoSet("https://www.soyuz.ru/public/uploads/files/2/7442148/2020071012030153ea07b13d.jpg")
         }
-    })
+    }, [])
 
     if (fetched) {
     return(
@@ -103,7 +118,7 @@ function ProfileEdit() {
             </div>
 
             <div className="saveBtnBlock">
-                <Button variant='dark' size='lg' onClick={saveClicked}>
+                <Button variant='dark' size='lg' onClick={() => saveClicked(false)}>
                     Сохранить изменения
                 </Button>
             </div>

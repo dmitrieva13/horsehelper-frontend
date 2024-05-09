@@ -43,6 +43,7 @@ function SignIn() {
             console.log(response)
             
             localStorage.setItem('token', response.accessToken)
+            localStorage.setItem('refreshToken', response.refreshToken)
             const decoded = jwtDecode<JwtPayload>(response.accessToken);
             localStorage.setItem('id', decoded.id)
             localStorage.setItem('name', decoded.name)
@@ -109,11 +110,12 @@ function SignIn() {
                                     onChange={a => passwordSet(a.target.value)} 
                                     isInvalid={!isPassValid}
                                     onClick={() => isPassValidSet(true)}
+                                    className='passInput'
                                     />
-                                    {type == "password" &&
+                                    {(type == "password" && isPassValid) &&
                                     <Eye className='passIcon' size={20} onClick={showPasswordClicked} />
                                     }
-                                    {type == "text" &&
+                                    {(type == "text" && isPassValid) &&
                                     <EyeSlash className='passIcon' size={20} onClick={hidePasswordClicked} />
                                     }
                                 </div>

@@ -55,7 +55,7 @@ function NewsPage() {
         })
     }
 
-    let createAnnouncement = () => {
+    let createAnnouncement = (isRefresh: boolean) => {
         if (newTitle == "") {
             newTitleValidSet(false)
             return
@@ -65,7 +65,8 @@ function NewsPage() {
               body: JSON.stringify({
                     title: newTitle,
                     body: newTextBody,
-                    accessToken: localStorage.getItem('token')
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
                 }),
               headers: {
                 'Accept': 'application/json',
@@ -79,15 +80,20 @@ function NewsPage() {
                 localStorage.clear()
                 navigate('../signin')
             }
-            if (response.errorMessage) {
-                localStorage.clear()
-                navigate('../signin')
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    createAnnouncement(true)
+                }
+                return
             }
             
             getAnnouncements()
             handleClose()
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
+            }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
             }
           })
           .catch(er=>{
@@ -149,7 +155,7 @@ function NewsPage() {
                 </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="dark" onClick={createAnnouncement}>
+                <Button variant="dark" onClick={() => createAnnouncement(false)}>
                     Создать
                 </Button>
                 </Modal.Footer>

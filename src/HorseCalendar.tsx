@@ -28,12 +28,13 @@ function HorseCalendar() {
     const [bookingsToday, bookingsTodaySet] = useState<any[]>([])
     const [drawData, drawDataSet] = useState(0)
 
-    let getBookings = () => {
+    let getBookings = (isRefresh: boolean) => {
         fetch("https://horsehelper-backend.onrender.com/get_bookings_by_horse", {
               method: "POST",
               body: JSON.stringify({
                     id: horseId,
-                    accessToken: localStorage.getItem('token')
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
                 }),
               headers: {
                 'Accept': 'application/json',
@@ -46,9 +47,11 @@ function HorseCalendar() {
               localStorage.clear()
               navigate('../signin')
             }
-            if (response.errorMessage) {
-                localStorage.clear()
-                navigate('../signin')
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    getBookings(true)
+                }
+                return
             }
 
             let bookings = response.bookings
@@ -58,18 +61,22 @@ function HorseCalendar() {
             if (response.accessToken) {
               localStorage.setItem('token', response.accessToken)
             }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
+            }
           })
           .catch(er=>{
             console.log(er.message)
         })
     }
 
-    let getUnavailableDays = () => {
+    let getUnavailableDays = (isRefresh: boolean) => {
         fetch("https://horsehelper-backend.onrender.com/get_unavailable_days", {
               method: "POST",
               body: JSON.stringify({
                     id: horseId,
-                    accessToken: localStorage.getItem('token')
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
                 }),
               headers: {
                 'Accept': 'application/json',
@@ -83,15 +90,24 @@ function HorseCalendar() {
                 localStorage.clear()
                 navigate('../signin')
             }
-            if (response.errorMessage) {
-                localStorage.clear()
-                navigate('../signin')
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                console.log("expired!")
+                if (!isRefresh) {
+                    console.log("refresh")
+                    getUnavailableDays(true)
+                }
+                return
             }
 
-            unavailableArrSet(response.unavailableDays)
+            if (response.unavailableDays) {
+                unavailableArrSet(response.unavailableDays)
+            }
             console.log(response.unavailableDays)
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
+            }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
             }
             if (!drawData) {
                 drawDataSet(1)
@@ -166,14 +182,15 @@ function HorseCalendar() {
         }
     }
 
-    let makeUnavaileableBtnClicked = () => {
+    let makeUnavaileableBtnClicked = (isRefresh: boolean) => {
         console.log(day);
         fetch("https://horsehelper-backend.onrender.com/make_horse_unavailable", {
               method: "POST",
               body: JSON.stringify({
                     id: horseId,
                     date: day,
-                    accessToken: localStorage.getItem('token')
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
                 }),
               headers: {
                 'Accept': 'application/json',
@@ -183,24 +200,39 @@ function HorseCalendar() {
           ).then(res=>res.json())
           .then(response=>{
             console.log(response)
+            if (response.error) {
+                localStorage.clear()
+                navigate('../signin')
+            }
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    makeUnavaileableBtnClicked(true)
+                }
+                return
+            }
+
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
             }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
+            }
             isAvailableSet(false)
-            getUnavailableDays()
+            getUnavailableDays(false)
           })
           .catch(er=>{
             console.log(er.message)
         })
     }
 
-    let makeAvaileableBtnClicked = () => {
+    let makeAvaileableBtnClicked = (isRefresh: boolean) => {
         fetch("https://horsehelper-backend.onrender.com/make_horse_available", {
               method: "POST",
               body: JSON.stringify({
                     id: horseId,
                     date: day,
-                    accessToken: localStorage.getItem('token')
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
                 }),
               headers: {
                 'Accept': 'application/json',
@@ -210,11 +242,25 @@ function HorseCalendar() {
           ).then(res=>res.json())
           .then(response=>{
             console.log(response)
+            if (response.error) {
+                localStorage.clear()
+                navigate('../signin')
+            }
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    makeAvaileableBtnClicked(true)
+                }
+                return
+            }
+
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
             }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
+            }
             isAvailableSet(true)
-            getUnavailableDays()
+            getUnavailableDays(false)
           })
           .catch(er=>{
             console.log(er.message)
@@ -226,8 +272,8 @@ function HorseCalendar() {
             todaySet(new Date())
             isAvailableSet(true)
 
-            getUnavailableDays()
-            getBookings()
+            getUnavailableDays(false)
+            getBookings(false)
 
             setTimeout(() => {
                 fetchedSet(1)
@@ -266,7 +312,7 @@ function HorseCalendar() {
                         }
                     </div>
                     <button className='makeUnavaileableBtn'
-                    onClick={makeUnavaileableBtnClicked}>
+                    onClick={() => makeUnavaileableBtnClicked(false)}>
                         Сделать недоступной в этот день
                     </button>
                 </div>}
@@ -276,7 +322,7 @@ function HorseCalendar() {
                     В этот день лошадь недоступна для занятий
                 </div>
                     <Button variant='secondary' className='makeAvaileableBtn'
-                    onClick={makeAvaileableBtnClicked}>
+                    onClick={() => makeAvaileableBtnClicked(false)}>
                         Сделать доступной в этот день
                     </Button>
                 </div>

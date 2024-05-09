@@ -41,7 +41,8 @@ function SignUp() {
           .then(response=>{
             console.log(response)
             localStorage.setItem('token', response.accessToken)
-            const decoded = jwtDecode<JwtPayload>(response.accessToken);
+            localStorage.setItem('refreshToken', response.refreshToken)
+            const decoded = jwtDecode<JwtPayload>(response.refreshToken);
             localStorage.setItem('id', decoded.id)
             localStorage.setItem('name', decoded.name)
             localStorage.setItem('role', decoded.role)
@@ -106,7 +107,7 @@ function SignUp() {
                                 <div className='passwordInput'>
                                     <Form.Control type={type} placeholder="Введите пароль"
                                         onChange={a => passwordSet(a.target.value)} required
-                                        minLength={4} maxLength={30}
+                                        minLength={4} maxLength={30} className='passInput'
                                     />
                                     {type == "password" &&
                                     <Eye className='passIcon' size={20} onClick={showPasswordClicked} />

@@ -27,11 +27,12 @@ function TrainerCalendar() {
     const [trainings, trainingsSet] = useState<any[]>([])
     const [trainingsToday, trainingsTodaySet] = useState<any[]>([])
 
-    let getTrainings = () => {
+    let getTrainings = (isRefresh: boolean) => {
         fetch("https://horsehelper-backend.onrender.com/get_current_bookings_trainer", {
               method: "POST",
               body: JSON.stringify({
-                    accessToken: localStorage.getItem('token')
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
                 }),
               headers: {
                 'Accept': 'application/json',
@@ -44,9 +45,11 @@ function TrainerCalendar() {
                 localStorage.clear()
                 navigate('../signin')
             }
-            if (response.errorMessage) {
-                localStorage.clear()
-                navigate('../signin')
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    getTrainings(true)
+                }
+                return
             }
 
             console.log(response)
@@ -56,17 +59,21 @@ function TrainerCalendar() {
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
             }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
+            }
           })
           .catch(er=>{
             console.log(er.message)
         })
     }
 
-    let getWorkingDays = () => {
+    let getWorkingDays = (isRefresh: boolean) => {
         fetch("https://horsehelper-backend.onrender.com/get_working_days", {
               method: "POST",
               body: JSON.stringify({
-                    accessToken: localStorage.getItem('token')
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
                 }),
               headers: {
                 'Accept': 'application/json',
@@ -80,9 +87,11 @@ function TrainerCalendar() {
                 navigate('../signin')
             }
 
-            if (response.errorMessage) {
-                localStorage.clear()
-                navigate('../signin')
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    getWorkingDays(true)
+                }
+                return
             }
 
             console.log(response)
@@ -91,6 +100,10 @@ function TrainerCalendar() {
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
             }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
+            }
+
             if (!drawData) {
                 drawDataSet(1)
             }
@@ -100,12 +113,13 @@ function TrainerCalendar() {
         })
     }
 
-    let makeDayOffBtnClicked = () => {
+    let makeDayOffBtnClicked = (isRefresh: boolean) => {
         fetch("https://horsehelper-backend.onrender.com/undo_working_day", {
               method: "POST",
               body: JSON.stringify({
                     date: day,
-                    accessToken: localStorage.getItem('token')
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
                 }),
               headers: {
                 'Accept': 'application/json',
@@ -117,25 +131,35 @@ function TrainerCalendar() {
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
             }
-            if (response.errorMessage) {
-                localStorage.clear()
-                navigate('../signin')
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    makeDayOffBtnClicked(true)
+                }
+                return
+            }
+
+            if (response.accessToken) {
+                localStorage.setItem('token', response.accessToken)
+            }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
             }
 
             isWorkingSet(false)
-            getWorkingDays()
+            getWorkingDays(false)
           })
           .catch(er=>{
             console.log(er.message)
         })
     }
 
-    let makeWorkingDayBtnClicked = () => {
+    let makeWorkingDayBtnClicked = (isRefresh: boolean) => {
         fetch("https://horsehelper-backend.onrender.com/set_working_day", {
               method: "POST",
               body: JSON.stringify({
                     date: day,
-                    accessToken: localStorage.getItem('token')
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
                 }),
               headers: {
                 'Accept': 'application/json',
@@ -147,16 +171,22 @@ function TrainerCalendar() {
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
             }
-            if (response.errorMessage) {
-                localStorage.clear()
-                navigate('../signin')
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    makeWorkingDayBtnClicked(true)
+                }
+                return
             }
 
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
             }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
+            }
+
             isWorkingSet(true)
-            getWorkingDays()
+            getWorkingDays(false)
           })
           .catch(er=>{
             console.log(er.message)
@@ -233,8 +263,8 @@ function TrainerCalendar() {
     useEffect(() => {
         if (!fetched) {
             todaySet(new Date())
-            getWorkingDays()
-            getTrainings()
+            getWorkingDays(false)
+            getTrainings(false)
             setTimeout(() => {
                 fetchedSet(1)
             }, 0)
@@ -277,7 +307,7 @@ function TrainerCalendar() {
                         }
                     </div>
                     <button className='makeDayOffBtn'
-                    onClick = {makeDayOffBtnClicked}>
+                    onClick = {() => makeDayOffBtnClicked(false)}>
                         Не работаю в этот день
                     </button>
                 </div>
@@ -289,7 +319,7 @@ function TrainerCalendar() {
                     Выходной
                 </div>
                     <Button variant='secondary' className='makeAvaileableBtn'
-                    onClick={makeWorkingDayBtnClicked}>
+                    onClick={() => makeWorkingDayBtnClicked(false)}>
                         Сделать этот день рабочим
                     </Button>
                 </div>

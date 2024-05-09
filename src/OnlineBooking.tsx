@@ -115,12 +115,13 @@ function OnlineBooking() {
         return slots
     }
 
-    let getSlots = () => {
+    let getSlots = (isRefresh: boolean) => {
     fetch("https://horsehelper-backend.onrender.com/get_slots_for_booking", {
             method: "POST",
             body: JSON.stringify({
                 type: type,
-                accessToken: localStorage.getItem('token')
+                accessToken: localStorage.getItem('token'),
+                refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
             }),
             headers: {
             'Accept': 'application/json',
@@ -129,28 +130,37 @@ function OnlineBooking() {
         }
         ).then(res=>res.json())
         .then(response=>{
-        console.log(response)
-        if (response.error) {
-            localStorage.clear()
-            navigate('../signin')
-        }
+            console.log(response)
+            if (response.error) {
+                localStorage.clear()
+                navigate('../signin')
+            }
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    getSlots(true)
+                }
+                return
+            }
 
-        let data = response.message
-        let slotsAll: any[] = []
-        data.forEach((el: any) => {
-            let slots = createSlots(new Date(el.date), el.timeslots)
-            slotsAll = [...slotsAll, ...slots]
-        })
-        console.log(slotsAll)
-        timeslotsSet(slotsAll)
+            let data = response.message
+            let slotsAll: any[] = []
+            data.forEach((el: any) => {
+                let slots = createSlots(new Date(el.date), el.timeslots)
+                slotsAll = [...slotsAll, ...slots]
+            })
+            console.log(slotsAll)
+            timeslotsSet(slotsAll)
 
-        timeFetchedSet(1)
-        makeVisisble("timeTrainerSelection")
-        makeInvisisble("nextBtnBlock")
-        
-        if (response.accessToken) {
-            localStorage.setItem('token', response.accessToken)
-        }
+            timeFetchedSet(1)
+            makeVisisble("timeTrainerSelection")
+            makeInvisisble("nextBtnBlock")
+            
+            if (response.accessToken) {
+                localStorage.setItem('token', response.accessToken)
+            }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
+            }
         })
         .catch(er=>{
         console.log(er.message)
@@ -200,7 +210,7 @@ function OnlineBooking() {
     let typeNextClicked = () => {
         typeDisabledSet(true)
         if (!timeFetched) {
-            getSlots()
+            getSlots(false)
         }
     }
 
@@ -227,7 +237,7 @@ function OnlineBooking() {
         makeInvisisble("calendarBlockBooking")
     }
 
-    let signupBtnClicked = () => {
+    let signupBtnClicked = (isRefresh: boolean) => {
         fetch("https://horsehelper-backend.onrender.com/new_booking", {
             method: "POST",
             body: JSON.stringify({
@@ -236,7 +246,8 @@ function OnlineBooking() {
                 date: time,
                 type: type,
                 comment: comment,
-                accessToken: localStorage.getItem('token')
+                accessToken: localStorage.getItem('token'),
+                refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
             }),
             headers: {
             'Accept': 'application/json',
@@ -249,9 +260,18 @@ function OnlineBooking() {
                 localStorage.clear()
                 navigate('../signin')
             }
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    signupBtnClicked(true)
+                }
+                return
+            }
             
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
+            }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
             }
             
             successSet(true)
@@ -275,6 +295,9 @@ function OnlineBooking() {
 
     return (
         <div className='booking'>
+            {success &&
+            <Message message='Вы успешно записались на тренировку!' />
+            }
             <Menu isProfile={false} />
             <div className="title">Запись на тренировку</div>
 
@@ -437,17 +460,16 @@ function OnlineBooking() {
 
                 <div className="centeredDiv">
                     <Button variant="dark" className='SignupBtn' size="lg"
-                    disabled={time == null || trainer == "" || horse==null}
-                    onClick={signupBtnClicked}>Записаться</Button>
+                    disabled={time == null || trainer == null || horse==null}
+                    onClick={() => signupBtnClicked(false)}>
+                        Записаться
+                    </Button>
                 </div>
             </div>
 
             {(!timeFetched && typeDisabled) && 
             <Loading />}
 
-            <div className="messageDiv" hidden={!success}>
-                <Message message='Вы успешно записались на тренировку!' />
-            </div>
         </div>
     )
 }

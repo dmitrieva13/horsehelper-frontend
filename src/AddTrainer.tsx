@@ -7,6 +7,7 @@ import { ArrowLeft } from 'react-bootstrap-icons';
 
 import './style/App.css'
 import './style/Add.css'
+import Message from './Message';
 
 function AddTrainer() {
   const [type, typeSet] = useState("")
@@ -19,6 +20,7 @@ function AddTrainer() {
   const [loaded, loadedSet] = useState(0)
   const [phoneInvalid, phoneInvalidSet] = useState(false)
   const [errortotal, errortotalSet] = useState("")
+  const [isSuccess, isSuccessSet] = useState(false)
 
   const types = ["Общая", "Выездка", "Конкур"]
   const navigate = useNavigate()
@@ -37,20 +39,6 @@ function AddTrainer() {
     }
     }
 
-  let makeVisisble = (className: string) => {
-    let divClass = document.querySelector("." + className)
-    if (divClass != null) {
-      divClass.className = className
-    }
-  }
-
-  let makeInvisisble = (className: string) => {
-    let divClass = document.querySelector("." + className)
-    if (divClass != null) {
-      divClass.className += " invisible"
-    }
-  }
-
   useEffect(() => {
     if (!loaded) {
         loadedSet(1)
@@ -62,7 +50,7 @@ function AddTrainer() {
     }
   })
 
-  let sendData = () => {
+  let sendData = (isRefresh: boolean) => {
     fetch("https://horsehelper-backend.onrender.com/register_trainer", {
               method: "POST",
               body: JSON.stringify({
@@ -72,7 +60,8 @@ function AddTrainer() {
                     trainerPhoto: photo,
                     trainerDescription: description,
                     trainerType: type,
-                    accessToken: localStorage.getItem('token')
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
                 }),
               headers: {
                 'Accept': 'application/json',
@@ -86,15 +75,25 @@ function AddTrainer() {
               localStorage.clear()
               navigate('../signin')
             }
-            if (response.errorMessage) {
-              localStorage.clear()
-              navigate('../signin')
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    sendData(true)
+                }
+                return
             }
 
             if (response.accessToken) {
               localStorage.setItem('token', response.accessToken)
             }
-            navigate('../trainers')
+            if (response.refreshToken) {
+              localStorage.setItem('refreshToken', response.refreshToken)
+            }
+
+            isSuccessSet(true)
+            setTimeout(() => {
+              isSuccessSet(false)
+              navigate('../trainers')
+              }, 1500)
           })
           .catch(er=>{
             console.log(er.message)
@@ -123,12 +122,7 @@ function AddTrainer() {
         errortotalSet('Заполните все обязательные поля!')
         return
     }
-    sendData()
-    // makeVisisble('createdSuccesfullyBlock')
-    // makeInvisisble('AddWorkerInputsBlock')
-    // setTimeout(() => {
-    //     navigate("/")
-    // }, 2000)
+    sendData(false)
 }
 
   let backClicked = () => {
@@ -137,11 +131,9 @@ function AddTrainer() {
 
   return (
     <div className="AddWorkerScreen">
-        {/* <div className="createdSuccesfullyBlock invisible">
-            <div className="successText">
-              Работник {username} успешно добавлен!
-            </div>
-        </div> */}
+      {isSuccess &&
+        <Message message='Тренер успешно добавлен!' />
+      }
         <div className="AddWorkerInputsBlock">
           <div className="backButtonBlock">
             <ArrowLeft onClick={backClicked} size={28} style={{cursor: 'pointer'}}/>

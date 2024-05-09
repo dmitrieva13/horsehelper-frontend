@@ -7,6 +7,7 @@ import { ArrowLeft } from 'react-bootstrap-icons';
 
 import './style/App.css'
 import './style/Add.css'
+import Message from './Message';
 
 function AddHorse() {
   const [selectedTypes, selectedTypesSet] = useState<any[]>([])
@@ -15,6 +16,7 @@ function AddHorse() {
   const [description, descriptionSet] = useState("")
   const [loaded, loadedSet] = useState(0)
   const [errortotal, errortotalSet] = useState("")
+  const [isSuccess, isSuccessSet] = useState(false)
 
   const types = [{name: "Общая", id: 1}, 
     {name: "Выездка", id: 2}, 
@@ -43,20 +45,6 @@ let onRemove = (selectedList: any, removedItem: any) => {
       })
     }
     }
-
-  let makeVisisble = (className: string) => {
-    let divClass = document.querySelector("." + className)
-    if (divClass != null) {
-      divClass.className = className
-    }
-  }
-
-  let makeInvisisble = (className: string) => {
-    let divClass = document.querySelector("." + className)
-    if (divClass != null) {
-      divClass.className += " invisible"
-    }
-  }
 
   useEffect(() => {
     if (!loaded) {
@@ -96,7 +84,12 @@ let onRemove = (selectedList: any, removedItem: any) => {
             if (response.accessToken) {
               localStorage.setItem('token', response.accessToken)
             }
-            navigate('../horses')
+
+            isSuccessSet(true)
+            setTimeout(() => {
+              isSuccessSet(false)
+              navigate('../horses')
+              }, 1500)
           })
           .catch(er=>{
             console.log(er.message)
@@ -123,11 +116,6 @@ let onRemove = (selectedList: any, removedItem: any) => {
       arr.push(t.name)
     })
     sendData(arr)
-    // makeVisisble('createdSuccesfullyBlock')
-    // makeInvisisble('AddHorseInputsBlock')
-    // setTimeout(() => {
-    //     navigate("/")
-    // }, 2000)
 }
 
 let backClicked = () => {
@@ -136,6 +124,9 @@ let backClicked = () => {
 
   return (
     <div className="AddHorseScreen">
+      {isSuccess &&
+      <Message message='Лоашдь успешно добавлена!' />
+      }
         <div className="backButtonBlock">
           <ArrowLeft onClick={backClicked} size={28} style={{cursor: 'pointer'}}/>
         </div>
