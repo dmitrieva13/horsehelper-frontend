@@ -14,6 +14,7 @@ function Profile() {
     const navigate = useNavigate()
 
     const [fetched, fetchedSet] = useState(0)
+    const [fetchedId, fetchedIdSet] = useState("")
     const [name, nameSet] = useState("")
     const [description, descriptionSet] = useState("")
     const [type, typeSet] = useState("")
@@ -22,6 +23,11 @@ function Profile() {
     const [studentsList, studentsListSet] = useState<any[]>([])
     const [showList, showListSet] = useState(false)
     const [isInList, isInListSet] = useState(false)
+
+    window.onpopstate = () => {
+        console.log('clicked pop state')
+        fetchedSet(0)
+    }
 
     let editClicked = () => {
         navigate('./edit')
@@ -113,6 +119,7 @@ function Profile() {
             if (response.refreshToken) {
                 localStorage.setItem('refreshToken', response.refreshToken)
             }
+            fetchedIdSet(userId.toString())
           })
           .catch(er=>{
             console.log(er.message)
@@ -212,6 +219,9 @@ function Profile() {
     }
 
     useEffect(() => {
+        if (fetchedId != userId) {
+            fetchedSet(0)
+        }
         if (!fetched) {
             getProfileData()
             setTimeout(() => {
@@ -228,6 +238,7 @@ function Profile() {
                 isInListSet(false)
             }
         }
+        
     })
 
     if (fetched) {

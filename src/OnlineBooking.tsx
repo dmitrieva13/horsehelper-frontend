@@ -123,7 +123,7 @@ function OnlineBooking() {
         }
       }
 
-    let getAvailableTimeslot = (type: string) => {
+    let getAvailableTimeslot = () => {
         let arr: any[] = []
         // let times: Date[] = []
         timeslots.map((slot: any, i: number) => {
@@ -132,6 +132,13 @@ function OnlineBooking() {
                 endTime: slot.end,
                 id: i
             })
+        })
+
+        arr = arr.filter((el: any) => {
+            let start = new Date()
+            start.setHours(start.getHours() + 2)
+            console.log(el.startTime, start)
+            return new Date(el.startTime) > new Date(start)
         })
         
         // console.log(arr)
@@ -289,7 +296,7 @@ function OnlineBooking() {
                             primaryColor="rgb(107, 142, 35)"
                             eventDurationInMinutes={60}
                             eventStartTimeSpreadInMinutes={0}
-                            availableTimeslots={getAvailableTimeslot(type)}
+                            availableTimeslots={getAvailableTimeslot()}
                             onStartTimeSelect={e => {
                                 timeSelected(e)
                                 makeInvisisble("calendarBlockBooking")
