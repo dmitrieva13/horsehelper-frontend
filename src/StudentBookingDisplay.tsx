@@ -2,7 +2,6 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Image, Modal, Button } from 'react-bootstrap';
-import { ArrowLeft } from 'react-bootstrap-icons';
 import Moment from 'moment';
 
 import './style/App.css'
