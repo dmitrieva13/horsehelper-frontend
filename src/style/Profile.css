@@ -138,3 +138,19 @@
     color: black;
     transition-duration: 0.5s;
 }
+
+.studentListBlock {
+    display: flex;
+    flex-direction: row;
+    column-gap: 20px;
+    align-items: center;
+    cursor: pointer;
+}
+
+.studentListImg {
+    object-fit: cover;
+    height: 80px;
+    max-height: 80px;
+    width: 80px;
+    max-width: 80px;
+}

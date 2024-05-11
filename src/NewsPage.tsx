@@ -86,6 +86,10 @@ function NewsPage() {
                 }
                 return
             }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
+            }
             
             getAnnouncements()
             handleClose()

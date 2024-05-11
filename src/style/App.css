@@ -20,8 +20,15 @@ button {
 }
 
 .oliveBtn {
-    border-radius: 10px;
+    border-radius: 7px;
     background-color: rgb(107, 142, 35);
+    border: none;
+    color: white;
+}
+
+.sangriaBtn {
+    border-radius: 7px;
+    background-color: #92000a;
     border: none;
     color: white;
 }
@@ -123,4 +130,17 @@ button:disabled {
     right: 10px;
     z-index: 10;
     cursor: pointer;
+}
+
+.emptyImage {
+    height: 80px;
+    width: 80px;
+    background-color: #b6c590;
+    color: rgb(107, 142, 35);
+    border-radius: 40px;
+    font-size: 40px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }

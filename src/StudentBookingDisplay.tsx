@@ -26,11 +26,15 @@ function StudentBookingDisplay(props: {training: any, isCurrent: boolean,
     }
 
     let trainerClicked = () => {
-        showTrainerSet(true)
+        if (props.isCurrent) {
+            showTrainerSet(true)
+        }
     }
 
     let horseClicked = () => {
-        showHorseSet(true)
+        if (props.isCurrent) {
+            showHorseSet(true)
+        }
     }
 
     let cancelBooking = (isRefresh: boolean) => {
@@ -60,9 +64,13 @@ function StudentBookingDisplay(props: {training: any, isCurrent: boolean,
                 }
                 return
             }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
+            }
 
             props.canceledFunc(true)
-            
+
             if (response.accessToken) {
               localStorage.setItem('token', response.accessToken)
             }
@@ -79,6 +87,16 @@ function StudentBookingDisplay(props: {training: any, isCurrent: boolean,
         if (!fetched) {
             if (!props.isCurrent && props.training.isCancelled) {
                 isCancelledSet(true)
+            }
+            if (props.isCurrent && props.training.horseTypes) {
+                let spec = ""
+                props.training.horseTypes.map((t: any, indx: any) => {
+                    if (indx > 0) {
+                        spec += ", "
+                    }
+                    spec += t
+                })
+                horseSpecSet(spec)
             }
         }
     })
@@ -100,12 +118,28 @@ function StudentBookingDisplay(props: {training: any, isCurrent: boolean,
                 <div className="bookingInfo">
                     <div className="bookingDate">{dateBeautify(new Date(props.training.date))}</div>
                     <div className="trainerHorseDisplayBlock">
-                        <div className="trainerDisplayBlock" onClick={trainerClicked}>
+                        <div className="trainerDisplayBlock" onClick={trainerClicked}
+                        style={{cursor: props.isCurrent ? "pointer" : "default"}}>
+                            {props.training.trainerPhoto && props.training.trainerPhoto != "" &&
                             <Image className='bookingImg' src={props.training.trainerPhoto} fluid roundedCircle />
+                            }
+                            {(!props.training.trainerPhoto || props.training.trainerPhoto == "") && props.training.trainerName &&
+                            <div className="emptyImage" style={{width: "200px", height: "200px"}}>
+                                {props.training.trainerName.slice(0,1)}
+                            </div>
+                            }
                             <div className="trainerName">Тренер: {props.training.trainerName}</div>
                         </div>
-                        <div className="horseDisplayBlock" onClick={horseClicked}>
+                        <div className="horseDisplayBlock" onClick={horseClicked}
+                        style={{cursor: props.isCurrent ? "pointer" : "default"}}>
+                            {props.training.horsePhoto && props.training.horsePhoto != "" &&
                             <Image className='bookingImg' src={props.training.horsePhoto} fluid roundedCircle />
+                            }
+                            {(!props.training.horsePhoto || props.training.horsePhoto == "") && props.training.horseName &&
+                            <div className="emptyImage" style={{width: "200px", height: "200px"}}>
+                                {props.training.horseName.slice(0,1)}
+                            </div>
+                            }
                             <div className="trainerName">Лошадь: {props.training.horseName}</div>
                         </div>
                     </div>
@@ -118,7 +152,8 @@ function StudentBookingDisplay(props: {training: any, isCurrent: boolean,
                     </div>
                     { props.isCurrent &&
                     <div className="cancelBtnBlock">
-                        <Button className='cancelBtn' variant='warning'>Отменить запись</Button>
+                        <Button className='cancelBtn' variant='warning'
+                        onClick={() => cancelBooking(false)}>Отменить запись</Button>
                     </div>
                     }
                 </div>
@@ -139,28 +174,31 @@ function StudentBookingDisplay(props: {training: any, isCurrent: boolean,
                     <div className="descrBlock">
                         {props.training.trainerDescription}
                     </div>
+                    <div className="phoneInfoBlock">
+                        {props.training.trainerPhone}
+                    </div>
                 </div>
                 </Modal.Body>
             </Modal>
 
-            {/* <Modal className='horseModal' show={showHorse} onHide={() => showHorseSet(false)} centered>
+            <Modal className='horseModal' show={showHorse} onHide={() => showHorseSet(false)} centered>
                 <Modal.Header closeButton>
-                <Modal.Title>{horse.name}</Modal.Title>
+                <Modal.Title>{props.training.horseName}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                 <div className="InfoBlock">
                     <div className="ImageBlock">
-                        <Image src={horse.photo} fluid />
+                        <Image src={props.training.horsePhoto} fluid />
                     </div>
                     <div className="specBlock">
                         Специализация: {horseSpec}
                     </div>
                     <div className="descrBlock">
-                        {horse.description}
+                        {props.training.horseDescription}
                     </div>
                 </div>
                 </Modal.Body>
-            </Modal> */}
+            </Modal>
         </div>
     )
 }

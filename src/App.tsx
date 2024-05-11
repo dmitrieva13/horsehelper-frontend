@@ -18,6 +18,7 @@ import Trainers from './Trainers'
 import TodayTrainings from './TodayTrainings'
 import StudentBookings from './StudentBookings'
 import HomePage from './HomePage'
+import AllTrainingsCalendar from './AllTrainingsCalendar'
 
 const App = () => {
   return(
@@ -37,6 +38,7 @@ const App = () => {
         <Route path='/tcalendar/:userId' element={<TrainerCalendar/>}/>
         <Route path='/todayschedule/:userId' element={<TodayTrainings/>}/>
         <Route path='/bookings/:userId' element={<StudentBookings/>}/>
+        <Route path='/allbookings' element={<AllTrainingsCalendar/>}/>
     </Routes>
   )
 }

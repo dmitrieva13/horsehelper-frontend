@@ -80,6 +80,10 @@ let onRemove = (selectedList: any, removedItem: any) => {
               localStorage.clear()
               navigate('../signin')
             }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+              localStorage.clear()
+              navigate('../signin')
+            }
 
             if (response.accessToken) {
               localStorage.setItem('token', response.accessToken)

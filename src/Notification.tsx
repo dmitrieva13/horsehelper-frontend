@@ -68,11 +68,11 @@ function Notification(props: {notification: any, role: String}) {
                 <div className="trainerNotification">
                     <div className="notificationText">
                         {text}
-                        <strong>{" "+dateBeautify(props.notification.booking.date)}</strong>
+                        <strong>{" "+dateBeautify(props.notification.booking.date)+" "}</strong>
                         в <strong>{" "+timeBeautify(props.notification.booking.date)}</strong>
                     </div>
                     <div className="notificationCreated">
-                        {dateBeautify(props.notification.dateCreated)}
+                        {dateBeautify(props.notification.dateCreated)+" "+timeBeautify(props.notification.dateCreated)}
                     </div>
                 </div>
                 }
@@ -80,7 +80,7 @@ function Notification(props: {notification: any, role: String}) {
                 <div className="studentNotification">
                 <div className="notificationText">
                     {text}
-                    <strong>{" "+dateBeautify(props.notification.date)} </strong>
+                    <strong>{" "+dateBeautify(props.notification.date)+" "}</strong>
                     в <strong>{" "+timeBeautify(props.notification.date)}</strong>
                 </div>
             </div>}

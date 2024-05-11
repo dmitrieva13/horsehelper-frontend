@@ -21,15 +21,7 @@ function Profile() {
     const [role, roleSet] = useState("")
     const [studentsList, studentsListSet] = useState<any[]>([])
     const [showList, showListSet] = useState(false)
-
-    let stList = [
-        {name: "A",
-        id: "24"},
-        {name: "B",
-        id: "231"},
-        {name: "C",
-        id: "100"}
-    ]
+    const [isInList, isInListSet] = useState(false)
 
     let editClicked = () => {
         navigate('./edit')
@@ -53,6 +45,7 @@ function Profile() {
 
     let studentClicked = (stId: string) => {
         showListSet(false)
+        fetchedSet(0)
         navigate('../user/' + stId)
     }
 
@@ -70,8 +63,14 @@ function Profile() {
           ).then(res=>res.json())
           .then(response=>{
             console.log(response)
-            if (response.studentsList) {
-                studentsListSet(response.studentsList)
+            let list = response.studentsList
+            if (list) {
+                studentsListSet(list)
+                // let index = list.findIndex((st: any) => st.studentId == localStorage.getItem('id'))
+                // console.log(index)
+                // if (index > -1) {
+                //     isInListSet(true)
+                // } else 
             }
           })
           .catch(er=>{
@@ -145,7 +144,60 @@ function Profile() {
                 }
                 return
             }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
+            }
+
             if (response.studentsList) {
+                getStudentsList()
+                isInListSet(true)
+            }
+            if (response.accessToken) {
+              localStorage.setItem('token', response.accessToken)
+            }
+            if (response.refreshToken) {
+                localStorage.setItem('refreshToken', response.refreshToken)
+            }
+          })
+          .catch(er=>{
+            console.log(er.message)
+        })
+    }
+
+    let deleteStudentList = (isRefresh: boolean) => {
+        fetch("https://horsehelper-backend.onrender.com/delete_student_list", {
+              method: "POST",
+              body: JSON.stringify({
+                    trainerId: userId,
+                    accessToken: localStorage.getItem('token'),
+                    refreshToken: isRefresh ? localStorage.getItem('refreshToken') : null
+                }),
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+          }).then(res=>res.json())
+          .then(response=>{
+            console.log(response)
+            if (response.error) {
+                localStorage.clear()
+                navigate('../signin')
+            }
+            if (response.errorMessage && response.errorMessage == "Token is expired") {
+                if (!isRefresh) {
+                    deleteStudentList(true)
+                }
+                return
+            }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
+            }
+
+            if (response.studentsList) {
+                getStudentsList()
+                isInListSet(false)
             }
             if (response.accessToken) {
               localStorage.setItem('token', response.accessToken)
@@ -164,10 +216,19 @@ function Profile() {
             getProfileData()
             setTimeout(() => {
                 fetchedSet(1)
-            }, 200)
+            }, 500)
             // photoSet("https://www.soyuz.ru/public/uploads/files/2/7442148/2020071012030153ea07b13d.jpg")
         }
-    }, [])
+        if (localStorage.getItem('role') == 'student' && userId != localStorage.getItem('id') && role == 'trainer') {
+            let index = studentsList.findIndex((st: any) => st.studentId == localStorage.getItem('id'))
+            console.log(index)
+            if (index > -1) {
+                isInListSet(true)
+            } else {
+                isInListSet(false)
+            }
+        }
+    })
 
     if (fetched) {
     return(
@@ -197,8 +258,18 @@ function Profile() {
                 </div>
                 {userId != localStorage.getItem('id') && 
                 localStorage.getItem('role') == 'student' &&
-                <button className='oliveBtn' style={{fontSize: "small"}}>
+                !isInList &&
+                <button className='oliveBtn' style={{fontSize: "small"}} 
+                onClick={() => addStudentList(false)}>
                         Добавиться
+                </button>
+                }
+                {userId != localStorage.getItem('id') && 
+                localStorage.getItem('role') == 'student' &&
+                isInList && studentsList.length > 0 &&
+                <button className='sangriaBtn' style={{fontSize: "small"}} 
+                onClick={() => deleteStudentList(false)}>
+                        Удалиться
                 </button>
                 }
             </div>
@@ -246,9 +317,19 @@ function Profile() {
                                 <ListGroup.Item as="li"
                         className="d-flex justify-content-between align-items-start"
                         action key={i.toString()}
-                            onClick={e => studentClicked(stud.id)}>
+                            onClick={e => studentClicked(stud.studentId)}>
                                 <div className="ms-2 me-auto">
-                                <div className="fw-bold">{stud.name}</div>
+                                    <div className="studentListBlock">
+                                        {stud.userPic && stud.userPic != "" &&
+                                        <Image className='studentListImg' src={stud.userPic} fluid roundedCircle />
+                                        }
+                                        {(!stud.userPic || stud.userPic == "") && stud.name &&
+                                        <div className="emptyImage">{stud.name.slice(0,1)}</div>
+                                        }
+                                        <div className="studentListText">
+                                            <div className="fw-bold">{stud.name}</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </ListGroup.Item>
                             )

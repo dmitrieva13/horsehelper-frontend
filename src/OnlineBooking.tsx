@@ -32,68 +32,6 @@ function OnlineBooking() {
     const navigate = useNavigate()
     const allTypes = ["Общая", "Выездка", "Конкур"]
 
-
-    let dates = [
-        {
-            start: "29 May 2024 12:00 GMT+0300",
-            trainer: "Dan",
-            type: "Конкур"
-        },
-        {
-            start: "29 May 2024 13:00 GMT+0300",
-            trainer: "Dan",
-            type: "Конкур"
-        },
-        {
-            start: "31 May 2024 18:00 GMT+0300",
-            trainer: "Dan",
-            type: "Конкур"
-        },
-        {
-            start: "29 May 2024 12:00 GMT+0300",
-            trainer: "Anna",
-            type: "Конкур"
-        },
-        {
-            start: "29 May 2024 13:00 GMT+0300",
-            trainer: "Andy",
-            type: "Выездка"
-        },
-        {
-            start: "01 Jun 2024 12:00 GMT+0300",
-            trainer: "Dan",
-            type: "Конкур"
-        },
-        {
-            start: "30 May 2024 10:00 GMT+0300",
-            trainer: "Jan",
-            type: "Общая"
-        }
-    ]
-
-    const all_horses = [
-        {
-            name: "Ромашка",
-            description: "Спокойная и добрая лошадь"
-        },
-        {
-            name: "Забава",
-            description: "Отлично подходит для опытных всадников"
-        },
-        {
-            name: "Ворон",
-            description: "Статный вороной конь. Занимал призовые места на сорвенованиях"
-        }
-    ]
-
-    const availableTimeslots = [1, 2, 3, 4, 5, 6, 7].map((id) => {
-        return {
-          id,
-          startTime: new Date(new Date(new Date().setDate(new Date().getDate() + id)).setHours(9, 0, 0, 0)),
-          endTime: new Date(new Date(new Date().setDate(new Date().getDate() + id)).setHours(17, 0, 0, 0)),
-        };
-      });
-
     let createSlots = (date: Date, times: any[]) => {
         let slots: any[] = []
         times.forEach((t: any) => {
@@ -140,6 +78,10 @@ function OnlineBooking() {
                     getSlots(true)
                 }
                 return
+            }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
             }
 
             let data = response.message
@@ -266,6 +208,10 @@ function OnlineBooking() {
                 }
                 return
             }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
+            }
             
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
@@ -277,7 +223,7 @@ function OnlineBooking() {
             successSet(true)
             setTimeout(() => {
                 successSet(false)
-                navigate("../home")
+                navigate("../")
             }, 1000)
         })
         .catch(er=>{
@@ -386,7 +332,12 @@ function OnlineBooking() {
                                             style={{cursor: "pointer"}}>
                                                 <div className="ms-2 me-auto">
                                                     <div className="trainerListBlock">
+                                                        {t.photo && t.photo != "" &&
                                                         <Image className='bookingListImg' src={t.photo} fluid roundedCircle />
+                                                        }
+                                                        {(!t.photo || t.photo == "") && t.name &&
+                                                        <div className="emptyImage">{t.name.slice(0,1)}</div>
+                                                        }
                                                         <div className="trainerListText">
                                                             <div className="fw-bold">{t.name}</div>
                                                             {t.description}
@@ -436,7 +387,12 @@ function OnlineBooking() {
                                             style={{cursor: "pointer"}}>
                                                 <div className="ms-2 me-auto">
                                                     <div className="horseListBlock">
+                                                        {h.photo && h.photo != "" &&
                                                         <Image className='bookingListImg' src={h.photo} fluid roundedCircle />
+                                                        }
+                                                        {(!h.photo || h.photo == "") && h.name &&
+                                                        <div className="emptyImage">{h.name.slice(0,1)}</div>
+                                                        }
                                                         <div className="horseListText">
                                                             <div className="fw-bold">{h.name}</div>
                                                             {h.description}

@@ -53,6 +53,10 @@ function HorseCalendar() {
                 }
                 return
             }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
+            }
 
             let bookings = response.bookings
             if (bookings) {
@@ -97,6 +101,10 @@ function HorseCalendar() {
                     getUnavailableDays(true)
                 }
                 return
+            }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
             }
 
             if (response.unavailableDays) {
@@ -146,7 +154,7 @@ function HorseCalendar() {
             isAvailableSet(false)
         } else {
             isAvailableSet(true)
-            getBookingsByDate(newDay)
+            getBookingsByDate(date)
         }
     }
 
@@ -210,6 +218,10 @@ function HorseCalendar() {
                 }
                 return
             }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
+            }
 
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
@@ -251,6 +263,10 @@ function HorseCalendar() {
                     makeAvaileableBtnClicked(true)
                 }
                 return
+            }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
             }
 
             if (response.accessToken) {

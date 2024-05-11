@@ -51,6 +51,10 @@ function TrainerCalendar() {
                 }
                 return
             }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
+            }
 
             console.log(response)
             if (response.bookings) {
@@ -92,6 +96,10 @@ function TrainerCalendar() {
                     getWorkingDays(true)
                 }
                 return
+            }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
             }
 
             console.log(response)
@@ -137,6 +145,10 @@ function TrainerCalendar() {
                 }
                 return
             }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
+            }
 
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
@@ -176,6 +188,10 @@ function TrainerCalendar() {
                     makeWorkingDayBtnClicked(true)
                 }
                 return
+            }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
             }
 
             if (response.accessToken) {

@@ -41,6 +41,10 @@ function TodayTrainings() {
                 }
                 return
             }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
+            }
 
             console.log(response)
             let bookings = response.bookings
@@ -101,6 +105,10 @@ function TodayTrainings() {
                     getWorkingDays(true)
                 }
                 return
+            }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
             }
 
             console.log(response)

@@ -49,7 +49,6 @@
 .trainerDisplayBlock, .horseDisplayBlock {
     text-align: center;
     padding-top: 5px;
-    cursor: pointer;
 }
 
 .bookingType {
@@ -153,4 +152,9 @@
     margin-left: 40px;
     margin-right: 40px;
     margin-bottom: 40px;
+}
+
+.phoneInfoBlock {
+    padding-top: 15px;
+    font-weight: bold;
 }

@@ -48,6 +48,10 @@ function StudentBookings() {
                 }
                 return
             }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
+            }
 
             let bookings = response.bookings
             if (bookings) {
@@ -92,6 +96,10 @@ function StudentBookings() {
                     getArchiveTrainings(true)
                 }
                 return
+            }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
             }
 
             let bookings = response.bookings
@@ -138,7 +146,7 @@ function StudentBookings() {
             getCurrentTrainings(false)
             getArchiveTrainings(false)
             setTimeout(() => {
-                fetchedSet(1)
+                isCancelSet(false)
             }, 200)
         }
     })

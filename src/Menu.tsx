@@ -86,6 +86,11 @@ function Menu(props: {isProfile: boolean}) {
         navigate('../user/' + id)
     }
 
+    let allBookingsClicked = () => {
+        handleClose()
+        navigate('../allbookings')
+    }
+
     let logoutClicked = () => {
         localStorage.clear()
         navigate('../signin')
@@ -120,9 +125,16 @@ function Menu(props: {isProfile: boolean}) {
                 }
                 return
             }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
+            }
 
             if (response.notifications) {
-                trainerNotificationsSet(response.notifications)
+                let sorted = response.notifications.sort((a: any, b: any) => {
+                    return new Date(a.date).getTime() - new Date(b.date).getTime()
+                }).reverse()
+                trainerNotificationsSet(sorted)
                 if (response.notifications.length > 0) {
                     hasNotificationsSet(true)
                 }
@@ -162,6 +174,10 @@ function Menu(props: {isProfile: boolean}) {
                     readTrainerNotifications(true)
                 }
                 return
+            }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
             }
 
             if (response.notifications) {
@@ -205,6 +221,10 @@ function Menu(props: {isProfile: boolean}) {
                     getStudentNotifications(true)
                 }
                 return
+            }
+            if (response.errorMessage && response.errorMessage != "Token is expired") {
+                localStorage.clear()
+                navigate('../signin')
             }
 
             if (response.notifications) {
@@ -295,6 +315,9 @@ function Menu(props: {isProfile: boolean}) {
                         <button className='menuBtn' onClick={trainersClicked}>Наши тренера</button>
                         {localStorage.getItem('role') == 'student' &&
                             <button className='menuBtn' onClick={bookingClicked}>Онлайн запись</button>
+                        }
+                        {localStorage.getItem('role') == 'admin' &&
+                            <button className='menuBtn' onClick={allBookingsClicked}>Все записи</button>
                         }
                     </div>
                 </Offcanvas.Body>
