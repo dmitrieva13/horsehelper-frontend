@@ -229,8 +229,9 @@ function TrainerCalendar() {
     let dayChanged = (newDay: any) => {
         console.log("new day",newDay)
         let date = new Date(newDay)
-        date.setHours(date.getHours() + 12)
+        date.setHours(12,0,0,0)
         daySet(date)
+        console.log(date)
         let found = workingDays.find((el) => {
             console.log("date", el.date);
             return Date.parse(el.date) == Date.parse(date.toString())

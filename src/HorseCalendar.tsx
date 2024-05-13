@@ -146,7 +146,7 @@ function HorseCalendar() {
     let dayChanged = (newDay: any) => {
         console.log(newDay);
         let date = new Date(newDay)
-        date.setHours(date.getHours() + 12)
+        date.setHours(12,0,0,0)
         daySet(date)
         let found = unavailableArr.find((el) => Date.parse(el.date) == Date.parse(date.toString()))
         console.log(found);

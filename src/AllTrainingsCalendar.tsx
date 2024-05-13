@@ -102,7 +102,7 @@ function AllTrainingsCalendar() {
                 fetchedSet(1)
             }, 0)
         }
-    })
+    }, [])
 
     if (fetched) {
     return(

@@ -100,18 +100,26 @@ function Profile() {
             console.log(response)
             if (response.name) {
                 nameSet(response.name)
+            } else {
+                nameSet("")
             }
             if (response.userDescription) {
                 descriptionSet(response.userDescription)
+            } else {
+                descriptionSet("")
             }
             if (response.userPic) {
                 photoSet(response.userPic)
+            } else {
+                photoSet("")
             }
             if (response.role) {
                 roleSet(response.role)
                 if (response.role == 'trainer') {
                     getStudentsList()
                 }
+            } else {
+                roleSet("")
             }
             if (response.accessToken) {
                 localStorage.setItem('token', response.accessToken)
@@ -220,7 +228,10 @@ function Profile() {
 
     useEffect(() => {
         if (fetchedId != userId) {
-            fetchedSet(0)
+            getProfileData()
+            // setTimeout(() => {
+            //     fetchedIdSet(userId.toString())
+            // }, 500)
         }
         if (!fetched) {
             getProfileData()
@@ -241,7 +252,7 @@ function Profile() {
         
     })
 
-    if (fetched) {
+    if (fetched && fetchedId == userId) {
     return(
         <div className="profileScreen">
             <Menu isProfile={userId == localStorage.getItem('id')} />

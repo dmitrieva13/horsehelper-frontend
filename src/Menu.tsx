@@ -25,12 +25,14 @@ function Menu(props: {isProfile: boolean}) {
 
     let trainerNotificationsClicked = () => {
         console.log("clicked");
-        if (!hasNotifications) {
+        if (!hasNotifications || localStorage.getItem('role') != 'trainer') {
             return
         }
         let clicks = clickCount + 1
         clickCountSet(clicks)
-        readTrainerNotifications(false)
+        if (localStorage.getItem('role') == 'trainer') {
+            readTrainerNotifications(false)
+        }
         if (clicks >= 2) {
             trainerNotificationsSet([])
             hasNotificationsSet(false)

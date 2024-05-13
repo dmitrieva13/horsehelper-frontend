@@ -16,6 +16,7 @@ function AddHorse() {
   const [description, descriptionSet] = useState("")
   const [loaded, loadedSet] = useState(0)
   const [errortotal, errortotalSet] = useState("")
+  const [borderColor, borderColorSet] = useState("white")
   const [isSuccess, isSuccessSet] = useState(false)
 
   const types = [{name: "Общая", id: 1}, 
@@ -25,6 +26,7 @@ function AddHorse() {
 
 
   let onSelect = (selectedList: any, selectedItem: any) => {
+    borderColorSet("white")
     selectedTypesSet(selectedList)
 }
 
@@ -103,7 +105,8 @@ let onRemove = (selectedList: any, removedItem: any) => {
   let addHorseButtonClicked = () => {
     let checked = true
     if (selectedTypes.length == 0) {
-        setError("selection")
+        // setError("selection")
+        borderColorSet("red")
         checked = false
     }
     if (name.length == 0) {
@@ -151,6 +154,7 @@ let backClicked = () => {
                 avoidHighlightFirstOption={true}
                 showArrow={true}
                 closeOnSelect={true}
+                style={{inputField: {borderBottom: `2px solid ${borderColor}`}}}
             />
             </div>
 
