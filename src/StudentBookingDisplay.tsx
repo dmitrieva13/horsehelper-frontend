@@ -6,7 +6,6 @@ import Moment from 'moment';
 
 import './style/App.css'
 import './style/StudentBookings.css'
-import Loading from './Loading';
 
 function StudentBookingDisplay(props: {training: any, isCurrent: boolean,
     canceledFunc: any}) {

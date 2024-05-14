@@ -5,7 +5,6 @@ import { Image } from 'react-bootstrap';
 
 import './style/App.css'
 import './style/HomePage.css'
-import Loading from './Loading';
 import Menu from './Menu';
 
 function HomePage() {
