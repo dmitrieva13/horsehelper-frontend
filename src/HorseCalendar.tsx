@@ -6,7 +6,6 @@ import { Button, CloseButton } from 'react-bootstrap';
 
 import './style/App.css'
 import './style/Calendar.css'
-// import 'react-calendar/dist/Calendar.css';
 import TrainingInfo from './TrainingInfo';
 import Loading from './Loading';
 
@@ -29,7 +28,7 @@ function HorseCalendar() {
     const [drawData, drawDataSet] = useState(0)
 
     let getBookings = (isRefresh: boolean) => {
-        fetch("https://horsehelper-backend.onrender.com/get_bookings_by_horse", {
+        fetch("http://localhost:3001/get_bookings_by_horse", {
               method: "POST",
               body: JSON.stringify({
                     id: horseId,
@@ -75,7 +74,7 @@ function HorseCalendar() {
     }
 
     let getUnavailableDays = (isRefresh: boolean) => {
-        fetch("https://horsehelper-backend.onrender.com/get_unavailable_days", {
+        fetch("http://localhost:3001/get_unavailable_days", {
               method: "POST",
               body: JSON.stringify({
                     id: horseId,
@@ -192,7 +191,7 @@ function HorseCalendar() {
 
     let makeUnavaileableBtnClicked = (isRefresh: boolean) => {
         console.log(day);
-        fetch("https://horsehelper-backend.onrender.com/make_horse_unavailable", {
+        fetch("http://localhost:3001/make_horse_unavailable", {
               method: "POST",
               body: JSON.stringify({
                     id: horseId,
@@ -238,7 +237,7 @@ function HorseCalendar() {
     }
 
     let makeAvaileableBtnClicked = (isRefresh: boolean) => {
-        fetch("https://horsehelper-backend.onrender.com/make_horse_available", {
+        fetch("http://localhost:3001/make_horse_available", {
               method: "POST",
               body: JSON.stringify({
                     id: horseId,

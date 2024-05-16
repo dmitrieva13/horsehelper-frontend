@@ -35,7 +35,7 @@ function Horses() {
 
     useEffect(() => {
         if (!fetched) {
-            fetch("https://horsehelper-backend.onrender.com/all_horses", {
+            fetch("http://localhost:3001/all_horses", {
               method: "POST",
               headers: {
                 'Accept': 'application/json',

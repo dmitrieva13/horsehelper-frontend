@@ -28,7 +28,7 @@ function TrainerCalendar() {
     const [trainingsToday, trainingsTodaySet] = useState<any[]>([])
 
     let getTrainings = (isRefresh: boolean) => {
-        fetch("https://horsehelper-backend.onrender.com/get_current_bookings_trainer", {
+        fetch("http://localhost:3001/get_current_bookings_trainer", {
               method: "POST",
               body: JSON.stringify({
                     accessToken: localStorage.getItem('token'),
@@ -73,7 +73,7 @@ function TrainerCalendar() {
     }
 
     let getWorkingDays = (isRefresh: boolean) => {
-        fetch("https://horsehelper-backend.onrender.com/get_working_days", {
+        fetch("http://localhost:3001/get_working_days", {
               method: "POST",
               body: JSON.stringify({
                     accessToken: localStorage.getItem('token'),
@@ -122,7 +122,7 @@ function TrainerCalendar() {
     }
 
     let makeDayOffBtnClicked = (isRefresh: boolean) => {
-        fetch("https://horsehelper-backend.onrender.com/undo_working_day", {
+        fetch("http://localhost:3001/undo_working_day", {
               method: "POST",
               body: JSON.stringify({
                     date: day,
@@ -166,7 +166,7 @@ function TrainerCalendar() {
     }
 
     let makeWorkingDayBtnClicked = (isRefresh: boolean) => {
-        fetch("https://horsehelper-backend.onrender.com/set_working_day", {
+        fetch("http://localhost:3001/set_working_day", {
               method: "POST",
               body: JSON.stringify({
                     date: day,

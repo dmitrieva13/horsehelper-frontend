@@ -54,7 +54,7 @@ function OnlineBooking() {
     }
 
     let getSlots = (isRefresh: boolean) => {
-    fetch("https://horsehelper-backend.onrender.com/get_slots_for_booking", {
+    fetch("http://localhost:3001/get_slots_for_booking", {
             method: "POST",
             body: JSON.stringify({
                 type: type,
@@ -187,7 +187,7 @@ function OnlineBooking() {
     }
 
     let signupBtnClicked = (isRefresh: boolean) => {
-        fetch("https://horsehelper-backend.onrender.com/new_booking", {
+        fetch("http://localhost:3001/new_booking", {
             method: "POST",
             body: JSON.stringify({
                 trainerId: trainer.id,

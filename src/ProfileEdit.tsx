@@ -21,7 +21,7 @@ function ProfileEdit() {
     }
 
     let getProfileData = () => {
-        fetch("https://horsehelper-backend.onrender.com/get_profile", {
+        fetch("http://localhost:3001/get_profile", {
               method: "POST",
               body: JSON.stringify({
                     id: userId
@@ -46,7 +46,7 @@ function ProfileEdit() {
     }
 
     let saveClicked = (isRefresh: boolean) => {
-        fetch("https://horsehelper-backend.onrender.com/change_profile", {
+        fetch("http://localhost:3001/change_profile", {
               method: "POST",
               body: JSON.stringify({
                     id: userId,

@@ -25,7 +25,7 @@ function StudentBookings() {
     const [isCancel, isCancelSet] = useState(false)
 
     let getCurrentTrainings = (isRefresh: boolean) => {
-        fetch("https://horsehelper-backend.onrender.com/get_current_bookings_student", {
+        fetch("http://localhost:3001/get_current_bookings_student", {
               method: "POST",
               body: JSON.stringify({
                     accessToken: localStorage.getItem('token'),
@@ -74,7 +74,7 @@ function StudentBookings() {
     }
 
     let getArchiveTrainings = (isRefresh: boolean) => {
-        fetch("https://horsehelper-backend.onrender.com/get_archived_bookings_student", {
+        fetch("http://localhost:3001/get_archived_bookings_student", {
               method: "POST",
               body: JSON.stringify({
                     accessToken: localStorage.getItem('token'),

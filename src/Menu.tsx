@@ -104,7 +104,7 @@ function Menu(props: {isProfile: boolean}) {
     }
 
     let getTrainerNotifications = (isRefresh: boolean) => {
-        fetch("https://horsehelper-backend.onrender.com/trainer_notifications", {
+        fetch("http://localhost:3001/trainer_notifications", {
               method: "POST",
               body: JSON.stringify({
                     accessToken: localStorage.getItem('token'),
@@ -154,7 +154,7 @@ function Menu(props: {isProfile: boolean}) {
     }
 
     let readTrainerNotifications = (isRefresh: boolean) => {
-        fetch("https://horsehelper-backend.onrender.com/read_trainer_notifications", {
+        fetch("http://localhost:3001/read_trainer_notifications", {
               method: "POST",
               body: JSON.stringify({
                     accessToken: localStorage.getItem('token'),
@@ -201,7 +201,7 @@ function Menu(props: {isProfile: boolean}) {
     }
 
     let getStudentNotifications = (isRefresh: boolean) => {
-        fetch("https://horsehelper-backend.onrender.com/student_notifications", {
+        fetch("http://localhost:3001/student_notifications", {
               method: "POST",
               body: JSON.stringify({
                     accessToken: localStorage.getItem('token'),

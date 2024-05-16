@@ -36,7 +36,7 @@ function StudentBookingDisplay(props: {training: any, isCurrent: boolean,
     }
 
     let cancelBooking = (isRefresh: boolean) => {
-        fetch("https://horsehelper-backend.onrender.com/cancel_booking", {
+        fetch("http://localhost:3001/cancel_booking", {
               method: "POST",
               body: JSON.stringify({
                     trainerId: props.training.trainerId,

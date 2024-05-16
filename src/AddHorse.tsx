@@ -57,7 +57,7 @@ let onRemove = (selectedList: any, removedItem: any) => {
   })
 
   let sendData = (typesSelected: any[]) => {
-    fetch("https://horsehelper-backend.onrender.com/add_horse", {
+    fetch("http://localhost:3001/add_horse", {
               method: "POST",
               body: JSON.stringify({
                     name: name,

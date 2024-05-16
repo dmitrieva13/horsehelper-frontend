@@ -36,7 +36,7 @@ function Trainers() {
 
     useEffect(() => {
         if (!fetched) {
-            fetch("https://horsehelper-backend.onrender.com/all_trainers", {
+            fetch("http://localhost:3001/all_trainers", {
               method: "POST",
               headers: {
                 'Accept': 'application/json',
