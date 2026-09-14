@@ -10,7 +10,7 @@ import Menu from './Menu';
 function HomePage() {
     const mainImage = "https://www.thesprucepets.com/thmb/WCHi1vABy_vfH6kDo7snIluUzyo=/2109x0/filters:no_upscale():strip_icc()/GettyImages-909948608-5c69cd9446e0fb0001560d1a.jpg"
     const horseImage = "https://media.istockphoto.com/id/1250673950/photo/appaloosa-horse-adult-standing-in-paddock-with-grass-in-mouth.jpg?s=612x612&w=0&k=20&c=9f1Z3UxEIMOM20qmDNWG8as-qaxxIHGGgWygpRtmJzI="
-    const trainerPhoto = "https://successundersaddle.com/wp-content/uploads/2019/05/Great-Coaching-in-Horsemanship.jpg"
+    const trainerPhoto = "https://i0.wp.com/fortworthreport.org/wp-content/uploads/2021/12/Erin-Davis-Heineking.jpg?fit=1800%2C1200&ssl=1"
 
     const trainersText = "Познакомьтесь с нашей командой профессиональных тренеров"
     const horsesText = "Посмотрите на лошадей нашей школы"

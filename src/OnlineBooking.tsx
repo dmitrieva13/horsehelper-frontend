@@ -54,7 +54,8 @@ function OnlineBooking() {
     }
 
     let getSlots = (isRefresh: boolean) => {
-    fetch("http://localhost:3001/get_slots_for_booking", {
+    // fetch("http://localhost:3001/get_slots_for_booking", {
+    fetch("https://horsehelper-backend.onrender.com/get_slots_for_booking", {
             method: "POST",
             body: JSON.stringify({
                 type: type,
@@ -187,7 +188,8 @@ function OnlineBooking() {
     }
 
     let signupBtnClicked = (isRefresh: boolean) => {
-        fetch("http://localhost:3001/new_booking", {
+        // fetch("http://localhost:3001/new_booking", {
+        fetch("https://horsehelper-backend.onrender.com/new_booking", {
             method: "POST",
             body: JSON.stringify({
                 trainerId: trainer.id,

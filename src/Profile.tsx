@@ -56,7 +56,8 @@ function Profile() {
     }
 
     let getStudentsList = () => {
-        fetch("http://localhost:3001/get_students_list", {
+        // fetch("http://localhost:3001/get_students_list", {
+        fetch("https://horsehelper-backend.onrender.com/get_students_list", {
               method: "POST",
               body: JSON.stringify({
                     trainerId: userId
@@ -85,7 +86,8 @@ function Profile() {
     }
 
     let getProfileData = () => {
-        fetch("http://localhost:3001/get_profile", {
+        // fetch("http://localhost:3001/get_profile", {
+        fetch("https://horsehelper-backend.onrender.com/get_profile", {
               method: "POST",
               body: JSON.stringify({
                     id: userId
@@ -135,7 +137,8 @@ function Profile() {
     }
 
     let addStudentList = (isRefresh: boolean) => {
-        fetch("http://localhost:3001/add_student_list", {
+        // fetch("http://localhost:3001/add_student_list", {
+        fetch("https://horsehelper-backend.onrender.com/add_student_list", {
               method: "POST",
               body: JSON.stringify({
                     trainerId: userId,
@@ -181,7 +184,8 @@ function Profile() {
     }
 
     let deleteStudentList = (isRefresh: boolean) => {
-        fetch("http://localhost:3001/delete_student_list", {
+        // fetch("http://localhost:3001/delete_student_list", {
+        fetch("https://horsehelper-backend.onrender.com/delete_student_list", {
               method: "POST",
               body: JSON.stringify({
                     trainerId: userId,

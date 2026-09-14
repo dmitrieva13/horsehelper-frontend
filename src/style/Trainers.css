@@ -10,11 +10,14 @@
     padding-left: 40px;
     padding-right: 40px;
     padding-bottom: 100px;
-    display: flex;
+    /* display: flex;
     flex-direction: row;
     column-gap: 15px;
     row-gap: 15px;
-    flex-wrap: wrap;
+    flex-wrap: wrap; */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); 
+    gap: 1.5rem;
 }
 
 .cardImage {

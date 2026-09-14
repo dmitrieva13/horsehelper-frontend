@@ -18,7 +18,8 @@ function TodayTrainings() {
     const [workingDays, workingDaysSet] = useState<any[]>([])
 
     let getTrainingsToday = (isRefresh: boolean) => {
-        fetch("http://localhost:3001/today_bookings", {
+        // fetch("http://localhost:3001/today_bookings", {
+        fetch("https://horsehelper-backend.onrender.com/today_bookings", {
               method: "POST",
               body: JSON.stringify({
                     accessToken: localStorage.getItem('token'),
@@ -83,7 +84,8 @@ function TodayTrainings() {
     }
 
     let getWorkingDays = (isRefresh: boolean) => {
-        fetch("http://localhost:3001/get_working_days", {
+        // fetch("http://localhost:3001/get_working_days", {
+        fetch("https://horsehelper-backend.onrender.com/get_working_days", {
               method: "POST",
               body: JSON.stringify({
                     accessToken: localStorage.getItem('token'),

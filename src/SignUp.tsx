@@ -25,7 +25,8 @@ function SignUp() {
       }
 
     let register = () => {
-        fetch("http://localhost:3001/register", {
+        // fetch("http://localhost:3001/register", {
+        fetch("https://horsehelper-backend.onrender.com/register", {
               method: "POST",
               body: JSON.stringify({
                     name: name,

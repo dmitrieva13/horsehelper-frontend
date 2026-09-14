@@ -28,7 +28,8 @@ function NewsPage() {
     const handleShow = () => showModalSet(true)
 
     let getAnnouncements = () => {
-        fetch("http://localhost:3001/announcements", {
+        // fetch("http://localhost:3001/announcements", {
+        fetch("https://horsehelper-backend.onrender.com/announcements", {
               method: "POST",
               headers: {
                 'Accept': 'application/json',
@@ -60,7 +61,8 @@ function NewsPage() {
             newTitleValidSet(false)
             return
         }
-        fetch("http://localhost:3001/new_announcement", {
+        // fetch("http://localhost:3001/new_announcement", {
+        fetch("https://horsehelper-backend.onrender.com/new_announcement", {
               method: "POST",
               body: JSON.stringify({
                     title: newTitle,

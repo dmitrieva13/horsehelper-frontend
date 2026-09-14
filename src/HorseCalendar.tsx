@@ -28,7 +28,8 @@ function HorseCalendar() {
     const [drawData, drawDataSet] = useState(0)
 
     let getBookings = (isRefresh: boolean) => {
-        fetch("http://localhost:3001/get_bookings_by_horse", {
+        // fetch("http://localhost:3001/get_bookings_by_horse", {
+        fetch("https://horsehelper-backend.onrender.com/get_bookings_by_horse", {
               method: "POST",
               body: JSON.stringify({
                     id: horseId,
@@ -74,7 +75,8 @@ function HorseCalendar() {
     }
 
     let getUnavailableDays = (isRefresh: boolean) => {
-        fetch("http://localhost:3001/get_unavailable_days", {
+        // fetch("http://localhost:3001/get_unavailable_days", {
+        fetch("https://horsehelper-backend.onrender.com/get_unavailable_days", {
               method: "POST",
               body: JSON.stringify({
                     id: horseId,
@@ -191,7 +193,8 @@ function HorseCalendar() {
 
     let makeUnavaileableBtnClicked = (isRefresh: boolean) => {
         console.log(day);
-        fetch("http://localhost:3001/make_horse_unavailable", {
+        // fetch("http://localhost:3001/make_horse_unavailable", {
+        fetch("https://horsehelper-backend.onrender.com/make_horse_unavailable", {
               method: "POST",
               body: JSON.stringify({
                     id: horseId,
@@ -237,7 +240,8 @@ function HorseCalendar() {
     }
 
     let makeAvaileableBtnClicked = (isRefresh: boolean) => {
-        fetch("http://localhost:3001/make_horse_available", {
+        // fetch("http://localhost:3001/make_horse_available", {
+        fetch("https://horsehelper-backend.onrender.com/make_horse_available", {
               method: "POST",
               body: JSON.stringify({
                     id: horseId,

@@ -51,7 +51,8 @@ function AddTrainer() {
   })
 
   let sendData = (isRefresh: boolean) => {
-    fetch("http://localhost:3001/register_trainer", {
+    // fetch("http://localhost:3001/register_trainer", {
+    fetch("https://horsehelper-backend.onrender.com/register_trainer", {
               method: "POST",
               body: JSON.stringify({
                     phone: "+7"+phone,

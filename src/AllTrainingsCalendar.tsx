@@ -24,7 +24,8 @@ function AllTrainingsCalendar() {
     const [bookingsToday, bookingsTodaySet] = useState<any[]>([])
 
     let getBookings = (isRefresh: boolean) => {
-        fetch("http://localhost:3001/get_all_bookings", {
+        // fetch("http://localhost:3001/get_all_bookings", {
+        fetch("https://horsehelper-backend.onrender.com/get_all_bookings", {
               method: "POST",
               body: JSON.stringify({
                     accessToken: localStorage.getItem('token'),
